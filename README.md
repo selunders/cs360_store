@@ -7,3 +7,9 @@ cs360-store/
     manage.py
     cs360-store/
     storeApp/
+
+## URLs
+store/ — Home page, shows user's past views and purchases
+store/vendors/<unique_name> — show all the products/services related to the vendor
+store/vendors/<name>/products/<product_id> — Show detailed information for a specific product 
+store/vendors/<name>/services/<service_id> — Show detailed information for a specific service
