@@ -94,7 +94,7 @@ class ProductListing(models.Model):
     quantity_available = models.IntegerField(help_text="How many are available? Leave blank if unlimited.", null=True, blank=True)
     restockDate = models.DateField(help_text="Leave blank if N/A",null=True, blank=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.RESTRICT)
-    tags = models.ManyToManyField(ProductTag, null=True, blank=True)
+    tags = models.ManyToManyField(ProductTag, blank=True)
     # options = models.CharField()
 
     def setActive(self, state):
@@ -120,7 +120,7 @@ class ServiceListing(models.Model):
     service_area = models.IntegerField(help_text="Enter miles from your Business Address that you service.")
     days_available = models.CharField(max_length=200, help_text="Enter the days/times this service is available, i.e. M-Th 9-5, Fri-Sun 10-1", null=True, blank=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.RESTRICT)
-    tags = models.ManyToManyField(ServiceTag, null=True, blank=True)
+    tags = models.ManyToManyField(ServiceTag, blank=True)
     # options = models.CharField()
 
     def setActive(self, state):
