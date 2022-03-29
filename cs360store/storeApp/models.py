@@ -70,6 +70,10 @@ class Vendor(models.Model):
     def __str__(self):
         return self.vendor_name
 
+    def get_absolute_url(self):
+        """Returns the url to access this vendor's page."""
+        return reverse('vendor-detail', args=[str(self.id)])
+
 class Invoice(models.Model):
     """Model representing an invoice for an order"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this particular order", editable=False)
@@ -103,6 +107,10 @@ class ProductListing(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        """Returns the url to access details for this product."""
+        return reverse('product-detail', args=[str(self.id)])
+
     def list_tags(self):
         return ', '.join(tag.name for tag in self.tags.all()[:3])
 
@@ -128,6 +136,10 @@ class ServiceListing(models.Model):
     
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        """Returns the url to access details for this service."""
+        return reverse('service-detail', args=[str(self.id)])
 
     def list_tags(self):
         return ', '.join(tag.name for tag in self.tags.all()[:3])
