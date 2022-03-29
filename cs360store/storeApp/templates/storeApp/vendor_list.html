@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+{% block title %}<title>CS Store | Vendors</title{% endblock %}
+
+{% block content %}
+    <h1>Vendors</h1>
+    {% if vendor_list %}
+    <ul>
+        {% for vendor in vendor_list %}
+        <li>
+            <a href="{{ vendor.get_absolute_url }}">{{ vendor.vendor_name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>There are currently no active vendors.</p>
+    {% endif %}
+{% endblock content %}

@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.views import generic
 
 # Create your views here.
 from .models import ShippingAddress, BillingAddress, ProductTag, ServiceTag, Vendor, Invoice, ProductListing, ServiceListing, InvoiceProduct, InvoiceService
@@ -20,3 +21,21 @@ def index(request):
     }
 
     return render(request, 'index.html', context = context)
+
+class VendorListView(generic.ListView):
+    model = Vendor
+
+class VendorDetailView(generic.DetailView):
+    model = Vendor
+
+class ProductListView(generic.ListView):
+    model = ProductListing
+
+class ProductDetailView(generic.DetailView):
+    model = ProductListing
+
+class ServiceListView(generic.ListView):
+    model = ServiceListing
+
+class ServiceDetailView(generic.DetailView):
+    model = ServiceListing

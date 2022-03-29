@@ -1,0 +1,12 @@
+{% extends "base_generic.html" %}
+{% block title %}<title>CS Store | {{ service.name }}</title{% endblock %}
+
+{% block content %}
+    <h1>{{ productlisting.name }}</h1>
+    <p><a href="{{ productlisting.vendor.get_absolute_url }}">{{ productlisting.vendor.vendor_name }}</a></p>
+    <img src="{{ productlisting.imageURL }}"/>
+    <p>${{ productlisting.price }} | {% if productlisting.quantity_available %}{{ productlisting.quantity_available }} in stock{% else %}Back in stock {{ productlisting.restockDate }}{% endif %}</p>
+    <p>{{ productlisting.description }}</p>
+    <p>{{ productlisting. }}</p>
+    <p>Tags: {{ productlisting.list_tags }}</p>
+{% endblock content %}

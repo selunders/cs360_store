@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+{% block title %}<title>CS Store | Services</title{% endblock %}
+
+{% block content %}
+    <h1>Available Services</h1>
+    {% if servicelisting_list %}
+    <ul>
+        {% for service in servicelisting_list %}
+            {% if service.active %}
+                <li>
+                    <a href="{{ service.get_absolute_url }}">{{ service.name }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>There are currently no available services.</p>
+    {% endif %}
+{% endblock content %}

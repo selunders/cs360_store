@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+{% block title %}<title>CS Store | Products</title{% endblock %}
+
+{% block content %}
+    <h1>Available Products</h1>
+    {% if productlisting_list %}
+    <ul>
+        {% for product in productlisting_list %}
+            {% if product.active %}
+                <li>
+                    <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>There are currently no available products.</p>
+    {% endif %}
+{% endblock content %}

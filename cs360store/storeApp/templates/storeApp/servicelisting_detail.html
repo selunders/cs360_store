@@ -1,0 +1,11 @@
+{% extends "base_generic.html" %}
+{% block title %}<title>CS Store | {{ service.name }}</title{% endblock %}
+
+{% block content %}
+    <h1>{{ servicelisting.name }}</h1>
+    <img src="{{ servicelisting.imageURL }}"/>
+    <p>${{ servicelisting.price }}{% if servicelisting.price_per_hour %}per hour{% endif %} | Days available: {{ servicelisting.days_available }}</p>
+    <p>{{ servicelisting.description }}</p>
+    <p>Tags: {{ servicelisting.list_tags}}</p>
+
+{% endblock content %}

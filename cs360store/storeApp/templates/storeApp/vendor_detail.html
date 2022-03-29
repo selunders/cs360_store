@@ -1,0 +1,30 @@
+{% extends "base_generic.html" %}
+{% block title %}<title>CS Store | {{ vendor.vendor_name }}</title{% endblock %}
+
+{% block content %}
+    <h1>{{ vendor.vendor_name }}</h1>
+    <h2>Products</h2>
+    {% if vendor.productlisting_set %}
+    <ul>
+        {% for product in vendor.productlisting_set.all %}
+        <li>
+            <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>There are currently no active products.</p>
+    {% endif %}
+    <h2>Services</h2>
+    {% if vendor.servicelisting_set %}
+    <ul>
+        {% for service in vendor.servicelisting_set.all %}
+        <li>
+            <a href="{{ service.get_absolute_url }}">{{ service.name }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>There are currently no active services.</p>
+    {% endif %}
+{% endblock content %}
