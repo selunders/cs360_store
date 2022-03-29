@@ -20,7 +20,8 @@ from django.views.generic import RedirectView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('store/', include('storeApp.urls')),
-    path('', RedirectView.as_view(url='store/', permanent=True)),
+    # path('', RedirectView.as_view(url='store/', permanent=True)),
+    path('', RedirectView.as_view(url='store/')),
 ]
 
 # Use static() to add url mapping to serve static files during development (only)
