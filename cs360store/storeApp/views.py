@@ -3,6 +3,7 @@ from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 # Create your views here.
+from django.contrib.auth.models import User
 from .models import ShippingAddress, BillingAddress, ProductTag, ServiceTag, Vendor, Invoice, ProductListing, ServiceListing, InvoiceProduct, InvoiceService
 # ------------------
 # Public Pages
@@ -47,4 +48,18 @@ class ServiceDetailView(generic.DetailView):
 # Vendor Pages
 # ------------------
 
-class CurrentProductsOffered(generic.ListView):
+class ManageProductsView(PermissionRequiredMixin, generic.ListView):
+    """Generic view for managing a vendor's products."""
+    model = ProductListing
+    template_name = 'storeApp/vendors/manage_products.html'
+    permission_required = 'storeApp.can_set_active'
+    def get_queryset(self):
+        return ProductListing.objects.filter(vendor=self.request.user.vendor)
+
+class ManageServicesView(PermissionRequiredMixin, generic.ListView):
+    """Generic view for managing a vendor's services."""
+    model = ServiceListing
+    template_name = 'storeApp/vendors/manage_services.html'
+    permission_required = 'storeApp.can_set_active'
+    def get_queryset(self):
+        return ServiceListing.objects.filter(vendor=self.request.user.vendor)

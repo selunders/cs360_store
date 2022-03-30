@@ -7,6 +7,9 @@
     <img src="{{ servicelisting.imageURL }}"/>
     <p>${{ servicelisting.price }}{% if servicelisting.price_per_hour %} per hour{% endif %} | {{ servicelisting.days_available }}</p>
     <p>{{ servicelisting.description }}</p>
-    <p>Tags: {{ servicelisting.list_tags}}</p>
+    
+    {% if servicelisting.list_tags %}
+        <p>Tags: {{ servicelisting.list_tags}}</p>
+    {% endif %}
 
 {% endblock content %}

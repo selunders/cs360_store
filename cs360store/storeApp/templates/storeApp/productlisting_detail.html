@@ -7,6 +7,7 @@
     <img src="{{ productlisting.imageURL }}"/>
     <p>${{ productlisting.price }} | {% if productlisting.quantity_available %}{{ productlisting.quantity_available }} in stock{% else %}Back in stock {{ productlisting.restockDate }}{% endif %}</p>
     <p>{{ productlisting.description }}</p>
-    <p>{{ productlisting. }}</p>
+    {% if productlisting.list_tags %}
     <p>Tags: {{ productlisting.list_tags }}</p>
+    {% endif %}
 {% endblock content %}

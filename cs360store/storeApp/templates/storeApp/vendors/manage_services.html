@@ -1,0 +1,13 @@
+{% extends "base_generic.html" %}
+{% block title %}<title>CS Store | Manage Services</title{% endblock %}
+
+{% block content %}
+    <h1>{{ user.vendor.vendor_name }}'s Services</h1>
+    {% if servicelisting_list %}
+        <ul>
+        {% for service in servicelisting_list %}
+            <li><a href="{{ service.get_absolute_url }}">{{ service.name }} | ${{ service.price }}{% if service.price_per_hour %} per hour{% endif %}{% if service.active %}{% else %} | <span class="text-danger">Inactive</span>{% endif %}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock content %}

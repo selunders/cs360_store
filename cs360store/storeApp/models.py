@@ -52,7 +52,7 @@ class ServiceTag(models.Model):
 class Vendor(models.Model):
     """Model representing a unique vendor."""
     vendor_name = models.CharField(max_length=200, help_text="Enter your vendor name.", unique=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.OneToOneField(User, on_delete=models.CASCADE)
 
     phone_number = models.CharField(max_length=20, help_text="1 (234) 567 8901")
     emergency_phone_number = models.CharField(max_length=20, help_text="1 (234) 567 8901")
@@ -91,7 +91,7 @@ class ProductListing(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this particular order", editable=False)
     active = models.BooleanField(default=True)
     name = models.CharField(max_length=200, help_text="Enter a name for your product.")
-    imageURL = models.URLField(max_length=200, help_text="Enter image URL")
+    imageURL = models.URLField(max_length=200, help_text="Enter image URL", default="https://picsum.photos/400/300")
     # price = models.DecimalField(max_digits=7, decimal_places=2) # allows max price of $99,999.99
     price = models.DecimalField(decimal_places=2, max_digits=7) # allows max price of $99,999.99
     description = models.TextField()
@@ -114,14 +114,16 @@ class ProductListing(models.Model):
     def list_tags(self):
         return ', '.join(tag.name for tag in self.tags.all()[:3])
 
-    list_tags.short_description = 'Tags'    
+    list_tags.short_description = 'Tags'
+    class Meta:
+        permissions = (("can_set_active", "Set product as active"),)
 
 class ServiceListing(models.Model):
     """Model representing a service being offered."""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this particular service", editable=False)
     active = models.BooleanField(default=True)
     name = models.CharField(max_length=200, help_text="Enter a name for your service.")
-    imageURL = models.URLField(max_length=200, help_text="Enter image URL", blank="True", null=True)
+    imageURL = models.URLField(max_length=200, help_text="Enter image URL", blank="True", null=True, default="https://picsum.photos/400/300")
     price = models.DecimalField(help_text="Max: 99,999.99. Set 0 \'Free\'", max_digits=7, decimal_places=2) # allows max price of $99,999.99
     price_per_hour = models.BooleanField(help_text="Is this service priced per hour?", default=False)
     description = models.TextField()
