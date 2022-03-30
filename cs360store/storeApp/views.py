@@ -1,9 +1,12 @@
 from django.shortcuts import render
 from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 # Create your views here.
 from .models import ShippingAddress, BillingAddress, ProductTag, ServiceTag, Vendor, Invoice, ProductListing, ServiceListing, InvoiceProduct, InvoiceService
-
+# ------------------
+# Public Pages
+# ------------------
 
 def index(request):
     """View function for home page of the site."""
@@ -39,3 +42,9 @@ class ServiceListView(generic.ListView):
 
 class ServiceDetailView(generic.DetailView):
     model = ServiceListing
+
+# ------------------
+# Vendor Pages
+# ------------------
+
+class CurrentProductsOffered(generic.ListView):

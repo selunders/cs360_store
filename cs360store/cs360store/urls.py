@@ -19,9 +19,10 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('store/', include('storeApp.urls')),
-    # path('', RedirectView.as_view(url='store/', permanent=True)),
     path('', RedirectView.as_view(url='store/')),
+    # path('', RedirectView.as_view(url='store/', permanent=True)),
 ]
 
 # Use static() to add url mapping to serve static files during development (only)

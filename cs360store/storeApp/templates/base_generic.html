@@ -19,6 +19,14 @@
           <li><a href="{% url 'vendors' %}">All Vendors</a></li>
           <li><a href="{% url 'products' %}">All Products</a></li>
           <li><a href="{% url 'services' %}">All Services</a></li>
+          <br/>
+          {% if user.is_authenticated %}
+            <li>Welcome, {{ user.first_name }}!</li>
+            <li><a href="{% url 'logout' %}">Log out</a></li>
+            {% else %}
+            <li><a href="{% url 'login' %}">Log in</a></li>
+          {% endif %}
+
         </ul>
      {% endblock %}
       </div>
