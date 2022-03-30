@@ -8,7 +8,7 @@
         {% for service in servicelisting_list %}
             {% if service.active %}
                 <li>
-                    <a href="{{ service.get_absolute_url }}">{{ service.name }}</a>
+                    <a href="{{ service.get_absolute_url }}">{{ service.name }} | ${{ service.price }}{% if service.price_per_hour %} per hour{% endif %}</a> | <a href="{{ service.vendor.get_absolute_url }}">{{ service.vendor.vendor_name }}</a>
                 </li>
             {% endif %}
         {% endfor %}
