@@ -1,0 +1,13 @@
+{% extends "base_generic.html" %}
+{% block title %}<title>CS Store | Orders</title>{% endblock %}
+
+{% block content %}
+<h1>Your Orders</h1>
+{% if invoice_list %}
+    <ul>
+    {% for invoice in invoice_list %}
+        <li><a href="{{ invoice.get_absolute_url }}">{{ invoice.date_placed }} | ${{ invoice.total_payment }} | {{ invoice.id }}</a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
+{% endblock content %}

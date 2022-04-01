@@ -1,0 +1,27 @@
+{% extends "base_generic.html" %}
+{% block title %}<title>CS Store | Manage Products</title{% endblock %}
+
+{% block content %}
+    <h1>Order #{{ invoice.id }}</h1>
+    <p>{{ invoice.date_placed }}</p>
+    {% if invoice.invoiceproduct_set.all %}
+    <h2>Products</h2>    
+    <hr/>
+    <ul>
+        {% for iproduct in invoice.invoiceproduct_set.all %}
+        <li><a href="{{ iproduct.product.get_absolute_url }}">{{ iproduct.product.name }} | ${{ iproduct.unit_price }} | qty: {{ iproduct.quantity_ordered }} | {% if iproduct.is_shipped %}Shipped!{% elif iproduct.is_canceled %}Order Canceled{% else %}Preparing for shipment{% endif %}</a></li>
+        {% endfor %}
+    </ul>
+    <hr/>
+    {% endif %}
+    {% if invoice.invoiceservice_set.all %}
+    <h2>Services</h2>    
+    <hr/>
+    <ul>
+        {% for iservice in invoice.invoiceservice_set.all %}
+        <li><a href="{{ iservice.service.get_absolute_url }}">{{ iservice.service.name }} | ${{ iservice.price_paid }} | {% if iservice.is_shipped %}Complete!{% elif iservice.is_canceled %}Service Canceled{% else %}Service scheduled{% endif %}</a></li>
+        {% endfor %}
+    </ul>
+    <hr/>
+    {% endif %}
+{% endblock content %}

@@ -45,6 +45,19 @@ class ServiceDetailView(generic.DetailView):
     model = ServiceListing
 
 # ------------------
+# Customer Pages
+# ------------------
+class MyOrdersListView(LoginRequiredMixin, generic.ListView):
+    model = Invoice
+    template_name = 'storeApp/customers/my_orders_list.html'
+    def get_queryset(self):
+        return Invoice.objects.filter(purchaser=self.request.user)
+
+class MyOrdersDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Invoice
+    template_name = 'storeApp/customers/my_orders_detail.html'
+
+# ------------------
 # Vendor Pages
 # ------------------
 
