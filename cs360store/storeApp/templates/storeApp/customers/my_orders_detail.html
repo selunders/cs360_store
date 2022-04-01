@@ -9,7 +9,7 @@
     <hr/>
     <ul>
         {% for iproduct in invoice.invoiceproduct_set.all %}
-        <li><a href="{{ iproduct.product.get_absolute_url }}">{{ iproduct.product.name }} | ${{ iproduct.unit_price }} | qty: {{ iproduct.quantity_ordered }} | {% if iproduct.is_shipped %}Shipped!{% elif iproduct.is_canceled %}Order Canceled{% else %}Preparing for shipment{% endif %}</a></li>
+        <li><a href="{{ iproduct.product.get_absolute_url }}">{{ iproduct.product.name }}</a> | ${{ iproduct.unit_price }} | qty: {{ iproduct.quantity_ordered }} | {% if iproduct.is_shipped %}Shipped!{% elif iproduct.is_canceled %}Order Canceled{% else %}Preparing for shipment{% endif %}</li>
         {% endfor %}
     </ul>
     <hr/>
@@ -19,7 +19,7 @@
     <hr/>
     <ul>
         {% for iservice in invoice.invoiceservice_set.all %}
-        <li><a href="{{ iservice.service.get_absolute_url }}">{{ iservice.service.name }} | ${{ iservice.price_paid }} | {% if iservice.is_shipped %}Complete!{% elif iservice.is_canceled %}Service Canceled{% else %}Service scheduled{% endif %}</a></li>
+        <li><a href="{{ iservice.service.get_absolute_url }}">{{ iservice.service.name }}</a> | <a href="{{ iservice.service.vendor.get_absolute_url }}">{{ iservice.service.vendor }}</a> |  ${{ iservice.price_paid }} | {% if iservice.is_shipped %}Complete!{% elif iservice.is_canceled %}Cancelled{% else %}Service scheduled{% endif %}</li>
         {% endfor %}
     </ul>
     <hr/>
