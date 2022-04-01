@@ -97,12 +97,20 @@ class InvoiceAdmin(admin.ModelAdmin):
 class ProductListingAdmin(admin.ModelAdmin):
     list_filter = ('active','vendor', )
     list_display = ('name', 'list_tags', 'vendor', 'price', 'quantity_available', 'active')
-    readonly_fields = ['vendor', ]
+    def get_readonly_fields(self, request, obj=None):
+        if obj: #This is the case when obj is already created i.e. it's an edit
+            return ['vendor',]
+        else:
+            return []
 
 class ServiceListingAdmin(admin.ModelAdmin):
     list_filter = ('active', 'vendor')
     list_display = ('name', 'list_tags', 'vendor', 'price', 'days_available', 'active')
-    readonly_fields = ['vendor', ]
+    def get_readonly_fields(self, request, obj=None):
+        if obj: #This is the case when obj is already created i.e. it's an edit
+            return ['vendor',]
+        else:
+            return []
 
 admin.site.register(Vendor, VendorAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
