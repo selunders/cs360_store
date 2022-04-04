@@ -1,0 +1,11 @@
+{% extends "base_generic.html" %} {% block title %}<title>
+  CS Store | Product Listing
+</title>
+{% endblock %} {% block content %}
+<h1>Delete Product Listing</h1>
+<p>Are you sure you want to delete the product listing: {{ productlisting }}?</p>
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="Yes, delete." />
+</form>
+{% endblock %}

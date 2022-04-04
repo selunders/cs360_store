@@ -32,3 +32,11 @@ urlpatterns += [
     # path('pending-orders/', views.PendingOrdersView.as_view(), name='pending-orders'),
     # path('fulfilled-orders/', views.FulfilledOrdersView.as_view(), name='fulfilled-orders'),
 ]
+
+urlpatterns += [
+    path('manage-products/create', views.ProductListingCreateView.as_view(), name='create-product'),
+    # path('manage-services/create', views.ServiceListingCreateView.as_view(), name='create-product'),
+    # path('manage-products/<uuid:pk>/update', views.ProductListingCreateView.as_view(), name='update-product'),
+    # path('manage-services/<uuid:pk>/update', views.ServiceListingCreateView.as_view(), name='update-service'),
+    # path('manage-products/<uuid:pk>/delete', views.ProductListingDeleteView.as_view(), name='delete-product'),
+]
