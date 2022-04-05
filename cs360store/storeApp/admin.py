@@ -3,7 +3,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import ShippingAddress, BillingAddress, Vendor, Invoice, ProductListing, ServiceListing, InvoiceProduct, InvoiceService, ProductTag, ServiceTag
+from .models import ShippingAddress, BillingAddress, Vendor, Invoice, ProductListing, ServiceListing, InvoiceProduct, InvoiceService, ProductTag, ServiceTag, Cart
 
 # ------------------
 # ---- Inlines ----- 
@@ -120,3 +120,4 @@ admin.site.register(ProductListing, ProductListingAdmin)
 admin.site.register(ServiceListing, ServiceListingAdmin)
 admin.site.register(ProductTag)
 admin.site.register(ServiceTag)
+admin.site.register(Cart)

@@ -2,7 +2,7 @@
 {% block title %}<title>CS Store | Cart</title{% endblock %}
 
 {% block content %}
-    <h1>Your cart</h1>
+    <h1>Check Out</h1>
     {% if cart_products.all %}
     <h2>Products</h2>    
     <hr/>
@@ -23,6 +23,6 @@
     </ul>
     <hr/>
     {% endif %}
-    <a href="{% url 'check-out' %}" class="btn btn-primary">Check Out</a>
+    <a href="{{ url 'check-out' }}" class="btn btn-primary">Check Out</a>
     {% comment %} <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a> {% endcomment %}
 {% endblock content %}

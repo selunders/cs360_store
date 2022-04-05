@@ -277,11 +277,27 @@ class InvoiceService(models.Model):
         super(InvoiceService, self).delete(*args, **kwargs)
         parentInvoice.save()
 
+class Cart(models.Model):
+    """Model representing a user's cart"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this user's cart", editable=False)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
+    subtotal = models.DecimalField(decimal_places=2, max_digits=7, default=0)
+    def __str__(self):
+        return str(self.id)
+
+    def get_absolute_url(self):
+        """Returns the url to access this order's page."""
+        return reverse('my-orders-detail', args=[str(self.id)])
+
+    def save(self, *args, **kwargs):
+        self.subtotal = float(CartProduct.objects.filter(cart__exact=self.id).aggregate(total_cost=models.Sum(F('product__price') * F('quantity'))).get('total_cost') or 0) #\
+#            + float(CartService.objects.filter(cart__exact=self.id).aggregate(total_cost=models.Sum(F('service__price_paid'))).get('total_cost') or 0)
+        super(Cart, self).save(*args, **kwargs)
     
 class CartProduct(models.Model):
     """Model representing a product in an order."""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this product in cart", editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE,)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE,)
     product = models.ForeignKey(ProductListing, on_delete=models.RESTRICT)
     # unit_price = models.DecimalField(decimal_places=2, max_digits=7, default=0)
     quantity = models.IntegerField(default=1, validators=[MaxValueValidator(9999)])
@@ -289,10 +305,14 @@ class CartProduct(models.Model):
     def __str__(self):
         return str(self.id)
     
+    def save(self, *args, **kwargs):
+        super(CartProduct, self).save(*args, **kwargs)
+        self.cart.save()
+    
 class CartService(models.Model):
     """Model representing a product in an order."""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this service in cart", editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE,)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE,)
     service = models.ForeignKey(ServiceListing, on_delete=models.RESTRICT)
     # price = models.DecimalField(decimal_places=2, max_digits=7, default=0)
     # per_hour = models.IntegerField(default=1, validators=[MaxValueValidator(9999)])
@@ -300,12 +320,12 @@ class CartService(models.Model):
     def __str__(self):
         return str(self.id)
 
-    # def save(self, *args, **kwargs):
-    #     if self._state.adding:
-    #         self.unit_price = self.product.price
-    #     self.vendor = self.product.vendor
-    #     super(InvoiceProduct, self).save(*args, **kwargs)
-    #     self.invoice.save()
+    def save(self, *args, **kwargs):
+        # if self._state.adding:
+            # self.unit_price = self.product.price
+        # self.vendor = self.product.vendor
+        super(CartService, self).save(*args, **kwargs)
+        self.cart.save()
 
     # def delete(self, *args, **kwargs):
     #     parentCart = self.user

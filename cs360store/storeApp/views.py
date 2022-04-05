@@ -5,12 +5,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
-
+from django.db.models import F
 # Create your views here.
 from django.contrib.auth.models import User
 
 from storeApp.forms import ProductListingCreateForm, ServiceListingCreateForm
-from .models import ShippingAddress, BillingAddress, ProductTag, ServiceTag, Vendor, Invoice, ProductListing, ServiceListing, InvoiceProduct, InvoiceService, CartProduct, CartService
+from .models import ShippingAddress, BillingAddress, ProductTag, ServiceTag, Vendor, Invoice, ProductListing, ServiceListing, InvoiceProduct, InvoiceService, CartProduct, CartService, Cart
 # ------------------
 # Public Pages
 # ------------------
@@ -62,8 +62,33 @@ class MyOrdersListView(LoginRequiredMixin, generic.ListView):
 @login_required
 def MyCartListView(request):
     """View cart function for customer."""
-    cart_products = CartProduct.objects.filter(user=request.user)
-    cart_services = CartService.objects.filter(user=request.user)
+    if request.user.cart:
+        cart = request.user.cart
+    else:
+        cart = Cart(user=request.user)
+        cart.save()
+
+    cart_products = CartProduct.objects.filter(cart=cart)
+    cart_services = CartService.objects.filter(cart=cart)
+
+    context = {
+        'cart_products': cart_products,
+        'cart_services': cart_services,
+    }
+    
+    return render(request, 'storeApp/customers/my_cart_detail.html', context)
+
+@login_required
+def CheckOutView(request):
+    """View cart function for customer."""
+    if request.user.cart:
+        cart = request.user.cart
+    else:
+        cart = Cart(user=request.user)
+        cart.save()
+
+    cart_products = CartProduct.objects.filter(cart=cart)
+    cart_services = CartService.objects.filter(cart=cart)
 
     context = {
         'cart_products': cart_products,
@@ -128,7 +153,6 @@ class ServiceListingCreateView(LoginRequiredMixin, PermissionRequiredMixin, Crea
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.vendor_id = self.request.user.vendor.id
-        self.object.tags
         self.object.save()
         form.save_m2m()
         return HttpResponseRedirect(self.get_success_url())
@@ -169,38 +193,23 @@ class ServiceListingUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Upda
     # success_url = reverse_lazy('index')
 
 @login_required
-def MyCartAddProductView(request, pID, qty):
+def MyCartAddProduct(request, pID, qty):
     """View cart function for customer."""
-    if pID and qty:
-        newCartProduct = CartProduct(user=request.user, product=ProductListing.objects.get(id=pID), quantity=qty)
-        newCartProduct.save()
-    elif request.sID:
-        newCartService = CartService(user=request.user, service=request.sID)
-        newCartService.save()
+    success_url = reverse_lazy('my-cart')
+    cart, exists = Cart.objects.get_or_create(user=request.user)
+    q, exists = CartProduct.objects.get_or_create(cart=cart, product=ProductListing.objects.get(id=pID))
+    q.quantity = F('quantity') + qty
+    q.save()
 
-    cart_products = CartProduct.objects.filter(user=request.user)
-    cart_services = CartService.objects.filter(user=request.user)
-
-    context = {
-        'cart_products': cart_products,
-        'cart_services': cart_services,
-    }
-    
-    return render(request, 'storeApp/customers/my_cart_detail.html', context)
+    return HttpResponseRedirect(success_url)
 
 @login_required
-def MyCartAddServiceView(request, sID):
+def MyCartAddService(request, sID):
     """View cart function for customer."""
-    if sID:
-        newCartService = CartService(user=request.user, service=ServiceListing.objects.get(id=sID))
-        newCartService.save()
+    success_url = reverse_lazy('my-cart')
+    cart, exists = Cart.objects.get_or_create(user=request.user)
 
-    cart_products = CartProduct.objects.filter(user=request.user)
-    cart_services = CartService.objects.filter(user=request.user)
-
-    context = {
-        'cart_products': cart_products,
-        'cart_services': cart_services,
-    }
+    newCartService = CartService(cart=cart, service=ServiceListing.objects.get(id=sID))
+    newCartService.save()
     
-    return render(request, 'storeApp/customers/my_cart_detail.html', context)
+    return HttpResponseRedirect(success_url)
