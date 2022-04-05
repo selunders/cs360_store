@@ -8,7 +8,7 @@
     <hr/>
     <ul>
         {% for cproduct in cart_products.all %}
-        <li><a href="{{ cproduct.product.get_absolute_url }}">{{ cproduct.product.name }}</a> | Qty: {{ cproduct.quantity }} @  ${{ cproduct.product.price }} each</li>
+        <li><a href="{{ cproduct.product.get_absolute_url }}">{{ cproduct.product.name }}</a> | Qty: {{ cproduct.quantity }} @  ${{ cproduct.product.price }} each | <a href="{% url 'my-cart-remove-product' pID=cproduct.product.id qty=1 %}">Remove</a></li>
         {% endfor %}
     </ul>
     <hr/>
@@ -18,10 +18,12 @@
     <hr/>
     <ul>
         {% for cservice in cart_services.all %}
-        <li><a href="{{ cservice.service.get_absolute_url }}">{{ cservice.service.name }}</a> | <a href="{{ cservice.service.vendor.get_absolute_url }}">{{ cservice.service.vendor }}</a></li>
+        <li><a href="{{ cservice.service.get_absolute_url }}">{{ cservice.service.name }}</a> | <a href="{{ cservice.service.vendor.get_absolute_url }}">{{ cservice.service.vendor }}</a> | <a href="{% url 'my-cart-remove-service' cservice.id %}">Remove</a></li>
         {% endfor %}
     </ul>
     <hr/>
+    <h3>Subtotal:</h3>
+    <h4>${{ subtotal }}</h4>
     {% endif %}
     <a href="{% url 'check-out' %}" class="btn btn-primary">Check Out</a>
     {% comment %} <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a> {% endcomment %}

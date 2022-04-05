@@ -112,6 +112,9 @@ class ServiceListingAdmin(admin.ModelAdmin):
         else:
             return []
 
+class CartAdmin(admin.ModelAdmin):
+    list_display = ('user', 'id', 'subtotal')
+
 admin.site.register(Vendor, VendorAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
 # admin.site.register(InvoiceProduct)
@@ -120,4 +123,4 @@ admin.site.register(ProductListing, ProductListingAdmin)
 admin.site.register(ServiceListing, ServiceListingAdmin)
 admin.site.register(ProductTag)
 admin.site.register(ServiceTag)
-admin.site.register(Cart)
+admin.site.register(Cart, CartAdmin)

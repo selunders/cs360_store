@@ -22,8 +22,10 @@ urlpatterns += [
     path('my-orders/', views.MyOrdersListView.as_view(), name='my-orders'),
     path('my-cart/', views.MyCartListView, name='my-cart'),
     path('check-out-cart/', views.CheckOutView, name='check-out'),
-    path('my-cart/<uuid:pID>/<int:qty>', views.MyCartAddProduct, name='my-cart-add-product'),
-    path('my-cart/<uuid:sID>/', views.MyCartAddService, name='my-cart-add-service'),
+    path('my-cart/<uuid:pID>/<int:qty>/add', views.MyCartAddProduct, name='my-cart-add-product'),
+    path('my-cart/<uuid:pID>/<int:qty>/remove', views.MyCartRemoveProduct, name='my-cart-remove-product'),
+    path('my-cart/<uuid:sID>/add', views.MyCartAddService, name='my-cart-add-service'),
+    path('my-cart/<uuid:csID>/remove', views.MyCartRemoveService, name='my-cart-remove-service'),
     path('my-orders/<uuid:pk>', views.MyOrdersDetailView.as_view(), name='my-orders-detail'),
 ]
 

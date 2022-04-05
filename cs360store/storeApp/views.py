@@ -59,43 +59,6 @@ class MyOrdersListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return Invoice.objects.filter(purchaser=self.request.user)
 
-@login_required
-def MyCartListView(request):
-    """View cart function for customer."""
-    if request.user.cart:
-        cart = request.user.cart
-    else:
-        cart = Cart(user=request.user)
-        cart.save()
-
-    cart_products = CartProduct.objects.filter(cart=cart)
-    cart_services = CartService.objects.filter(cart=cart)
-
-    context = {
-        'cart_products': cart_products,
-        'cart_services': cart_services,
-    }
-    
-    return render(request, 'storeApp/customers/my_cart_detail.html', context)
-
-@login_required
-def CheckOutView(request):
-    """View cart function for customer."""
-    if request.user.cart:
-        cart = request.user.cart
-    else:
-        cart = Cart(user=request.user)
-        cart.save()
-
-    cart_products = CartProduct.objects.filter(cart=cart)
-    cart_services = CartService.objects.filter(cart=cart)
-
-    context = {
-        'cart_products': cart_products,
-        'cart_services': cart_services,
-    }
-    
-    return render(request, 'storeApp/customers/my_cart_detail.html', context)
 
 class MyOrdersDetailView(LoginRequiredMixin, generic.DetailView):
     model = Invoice
@@ -196,11 +159,11 @@ class ServiceListingUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Upda
 def MyCartAddProduct(request, pID, qty):
     """View cart function for customer."""
     success_url = reverse_lazy('my-cart')
-    cart, exists = Cart.objects.get_or_create(user=request.user)
-    q, exists = CartProduct.objects.get_or_create(cart=cart, product=ProductListing.objects.get(id=pID))
-    q.quantity = F('quantity') + qty
-    q.save()
-
+    if request.method=='GET':
+        cart, exists = Cart.objects.get_or_create(user=request.user)
+        q, exists = CartProduct.objects.get_or_create(cart=cart, product=ProductListing.objects.get(id=pID))
+        q.quantity = q.quantity + qty # possible race condition, can't see this one being an issue
+        q.save()
     return HttpResponseRedirect(success_url)
 
 @login_required
@@ -213,3 +176,69 @@ def MyCartAddService(request, sID):
     newCartService.save()
     
     return HttpResponseRedirect(success_url)
+
+@login_required
+def MyCartRemoveProduct(request, pID, qty):
+    """View cart function for customer."""
+    success_url = reverse_lazy('my-cart')
+    cart, cart_exists = Cart.objects.get_or_create(user=request.user)
+    q = CartProduct.objects.get(cart=cart, product=ProductListing.objects.get(id=pID))
+    if q:
+        if qty <= 0:
+            q.delete()
+        else:
+            q.quantity = F('quantity') - qty
+            q.save()
+
+    return HttpResponseRedirect(success_url)
+
+@login_required
+def MyCartRemoveService(request, csID):
+    """View cart function for customer."""
+    success_url = reverse_lazy('my-cart')
+    cart, exists = Cart.objects.get_or_create(user=request.user)
+
+    service_to_delete = CartService.objects.get(cart=cart, id=csID)
+    service_to_delete.delete()
+    
+    return HttpResponseRedirect(success_url)
+
+@login_required
+def MyCartListView(request):
+    """View cart function for customer."""
+    if request.user.cart:
+        cart = request.user.cart
+    else:
+        cart = Cart(user=request.user)
+        cart.save()
+
+    cart_products = CartProduct.objects.filter(cart=cart)
+    cart_services = CartService.objects.filter(cart=cart)
+    cart_subtotal = cart.subtotal
+
+    context = {
+        'cart_products': cart_products,
+        'cart_services': cart_services,
+        'subtotal': cart_subtotal,
+    }
+    
+    return render(request, 'storeApp/customers/my_cart_detail.html', context)
+
+@login_required
+def CheckOutView(request):
+    """View cart function for customer."""
+    if request.user.cart:
+        cart = request.user.cart
+    else:
+        cart = Cart(user=request.user)
+        cart.save()
+
+    cart_products = CartProduct.objects.filter(cart=cart)
+    cart_services = CartService.objects.filter(cart=cart)
+
+    context = {
+        'cart_products': cart_products,
+        'cart_services': cart_services,
+    }
+    
+    return render(request, 'storeApp/customers/my_cart_detail.html', context)
