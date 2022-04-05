@@ -4,6 +4,7 @@
 {% block content %}
     <h1>{{ servicelisting.name }}</h1>
     <p><a href="{{ servicelisting.vendor.get_absolute_url }}">{{ servicelisting.vendor.vendor_name }}</a></p>
+    
     <img src="{{ servicelisting.imageURL }}"/>
     <p>${{ servicelisting.price }}{% if servicelisting.price_per_hour %} per hour{% endif %} | {{ servicelisting.days_available }}</p>
     <p>{{ servicelisting.description }}</p>
@@ -11,5 +12,6 @@
     {% if servicelisting.list_tags %}
         <p>Tags: {{ servicelisting.list_tags}}</p>
     {% endif %}
+    <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a>
 
 {% endblock content %}

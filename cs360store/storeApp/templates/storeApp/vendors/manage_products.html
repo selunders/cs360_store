@@ -2,13 +2,14 @@
 {% block title %}<title>CS Store | Manage Products</title{% endblock %}
 
 {% block content %}
-    <h1>{{ user.vendor.vendor_name }}'s Products</h1>
+    <h1>Manage products</h1>
     <ul>
     {% if productlisting_list %}
         {% for product in productlisting_list %}
             <li><a href="{% url 'update-product' product.id %}">{{ product.name }} | ${{ product.price }} | {{ product.quantity_available }} in stock{% if product.active %}{% else %} | <span class="text-danger">Inactive</span>{% endif %}</a></li>
         {% endfor %}
     {% endif %}
-    <li><a href="{% url 'create-product' %}">Add product</a></li>
-    </ul>
+</ul>
+<a href="{% url 'create-product' %}" class="btn btn-primary">Add product</a>
+<a href="javascript:history.go(-1)" class="btn btn-secondary">Back</a>
 {% endblock content %}

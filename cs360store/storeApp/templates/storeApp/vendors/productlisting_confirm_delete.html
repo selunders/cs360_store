@@ -7,5 +7,6 @@
 <form action="" method="POST">
   {% csrf_token %}
   <input type="submit" value="Yes, delete." />
+  <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a>
 </form>
 {% endblock %}
