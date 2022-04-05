@@ -6,7 +6,7 @@
     <ul>
     {% if productlisting_list %}
         {% for product in productlisting_list %}
-            <li><a href="{{ product.get_absolute_url }}">{{ product.name }} | ${{ product.price }} | {{ product.quantity_available }} in stock{% if product.active %}{% else %} | <span class="text-danger">Inactive</span>{% endif %}</a></li>
+            <li><a href="{% url 'update-product' product.id %}">{{ product.name }} | ${{ product.price }} | {{ product.quantity_available }} in stock{% if product.active %}{% else %} | <span class="text-danger">Inactive</span>{% endif %}</a></li>
         {% endfor %}
     {% endif %}
     <li><a href="{% url 'create-product' %}">Add product</a></li>

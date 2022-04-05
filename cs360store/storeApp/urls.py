@@ -35,8 +35,9 @@ urlpatterns += [
 
 urlpatterns += [
     path('manage-products/create', views.ProductListingCreateView.as_view(), name='create-product'),
-    # path('manage-services/create', views.ServiceListingCreateView.as_view(), name='create-product'),
-    # path('manage-products/<uuid:pk>/update', views.ProductListingCreateView.as_view(), name='update-product'),
+    path('manage-services/create', views.ServiceListingCreateView.as_view(), name='create-service'),
+    path('manage-products/<uuid:pk>/update', views.ProductListingUpdateView.as_view(), name='update-product'),
+    path('manage-services/<uuid:pk>/update', views.ServiceListingUpdateView.as_view(), name='update-service'),
     # path('manage-services/<uuid:pk>/update', views.ServiceListingCreateView.as_view(), name='update-service'),
     # path('manage-products/<uuid:pk>/delete', views.ProductListingDeleteView.as_view(), name='delete-product'),
 ]
