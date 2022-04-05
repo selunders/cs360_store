@@ -12,6 +12,15 @@
     {% if servicelisting.list_tags %}
         <p>Tags: {{ servicelisting.list_tags}}</p>
     {% endif %}
-    <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a>
+    <button                     
+    data-product="{{ servicelisting.id }}"
+    data-action="add"
+    class="button button-primary"
+    target='_self'
+    onclick="window.open('{% url 'my-cart-add-service' sID=servicelisting.id %}')"
+    >
+    Add to cart
+    </button> 
+    <a href="javascript:history.go(-1)" class="btn btn-secondary">Back</a>
 
 {% endblock content %}

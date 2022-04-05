@@ -181,7 +181,7 @@ class ServiceListing(models.Model):
 
 class InvoiceProduct(models.Model):
     """Model representing a product in an order."""
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this particular service", editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this product listing", editable=False)
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE,)
     product = models.ForeignKey(ProductListing, on_delete=models.RESTRICT)
     vendor = models.ForeignKey(Vendor, on_delete=models.RESTRICT, blank=True)
@@ -234,7 +234,7 @@ class InvoiceProduct(models.Model):
 
 class InvoiceService(models.Model):
     """Model representing a service in an order."""
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this particular service", editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this service listing", editable=False)
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
     service = models.ForeignKey(ServiceListing, on_delete=models.RESTRICT)
     price_paid = models.DecimalField(decimal_places=2, max_digits=7, default=0)
@@ -278,3 +278,36 @@ class InvoiceService(models.Model):
         parentInvoice.save()
 
     
+class CartProduct(models.Model):
+    """Model representing a product in an order."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this product in cart", editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,)
+    product = models.ForeignKey(ProductListing, on_delete=models.RESTRICT)
+    # unit_price = models.DecimalField(decimal_places=2, max_digits=7, default=0)
+    quantity = models.IntegerField(default=1, validators=[MaxValueValidator(9999)])
+
+    def __str__(self):
+        return str(self.id)
+    
+class CartService(models.Model):
+    """Model representing a product in an order."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this service in cart", editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,)
+    service = models.ForeignKey(ServiceListing, on_delete=models.RESTRICT)
+    # price = models.DecimalField(decimal_places=2, max_digits=7, default=0)
+    # per_hour = models.IntegerField(default=1, validators=[MaxValueValidator(9999)])
+
+    def __str__(self):
+        return str(self.id)
+
+    # def save(self, *args, **kwargs):
+    #     if self._state.adding:
+    #         self.unit_price = self.product.price
+    #     self.vendor = self.product.vendor
+    #     super(InvoiceProduct, self).save(*args, **kwargs)
+    #     self.invoice.save()
+
+    # def delete(self, *args, **kwargs):
+    #     parentCart = self.user
+    #     super(CartProduct, self).delete(*args, **kwargs)
+    #     parentCart.save()

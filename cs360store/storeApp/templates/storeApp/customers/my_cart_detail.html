@@ -1,0 +1,27 @@
+{% extends "base_generic.html" %}
+{% block title %}<title>CS Store | Cart</title{% endblock %}
+
+{% block content %}
+    <h1>Your cart</h1>
+    {% if cart_products.all %}
+    <h2>Products</h2>    
+    <hr/>
+    <ul>
+        {% for cproduct in cart_products.all %}
+        <li><a href="{{ cproduct.product.get_absolute_url }}">{{ cproduct.product.name }}</a> | qty: {{ cproduct.quantity }} @  ${{ cproduct.product.price }} each</li>
+        {% endfor %}
+    </ul>
+    <hr/>
+    {% endif %}
+    {% if cart_services.all %}
+    <h2>Services</h2>    
+    <hr/>
+    <ul>
+        {% for cservice in cart_services.all %}
+        <li><a href="{{ cservice.service.get_absolute_url }}">{{ cservice.service.name }}</a> | <a href="{{ cservice.service.vendor.get_absolute_url }}">{{ cservice.service.vendor }}</a></li>
+        {% endfor %}
+    </ul>
+    <hr/>
+    {% endif %}
+    {% comment %} <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a> {% endcomment %}
+{% endblock content %}

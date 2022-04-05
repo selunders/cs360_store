@@ -20,6 +20,9 @@ urlpatterns = [
 # ------------
 urlpatterns += [
     path('my-orders/', views.MyOrdersListView.as_view(), name='my-orders'),
+    path('my-cart/', views.MyCartListView, name='my-cart'),
+    path('my-cart/<uuid:pID>/<int:qty>', views.MyCartAddProductView, name='my-cart-add-product'),
+    path('my-cart/<uuid:sID>/', views.MyCartAddServiceView, name='my-cart-add-service'),
     path('my-orders/<uuid:pk>', views.MyOrdersDetailView.as_view(), name='my-orders-detail'),
 ]
 

@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required, permission_required
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 
@@ -9,7 +10,7 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.models import User
 
 from storeApp.forms import ProductListingCreateForm, ServiceListingCreateForm
-from .models import ShippingAddress, BillingAddress, ProductTag, ServiceTag, Vendor, Invoice, ProductListing, ServiceListing, InvoiceProduct, InvoiceService
+from .models import ShippingAddress, BillingAddress, ProductTag, ServiceTag, Vendor, Invoice, ProductListing, ServiceListing, InvoiceProduct, InvoiceService, CartProduct, CartService
 # ------------------
 # Public Pages
 # ------------------
@@ -58,6 +59,19 @@ class MyOrdersListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return Invoice.objects.filter(purchaser=self.request.user)
 
+@login_required
+def MyCartListView(request):
+    """View cart function for customer."""
+    cart_products = CartProduct.objects.filter(user=request.user)
+    cart_services = CartService.objects.filter(user=request.user)
+
+    context = {
+        'cart_products': cart_products,
+        'cart_services': cart_services,
+    }
+    
+    return render(request, 'storeApp/customers/my_cart_detail.html', context)
+
 class MyOrdersDetailView(LoginRequiredMixin, generic.DetailView):
     model = Invoice
     template_name = 'storeApp/customers/my_orders_detail.html'
@@ -81,11 +95,6 @@ class ManageServicesView(PermissionRequiredMixin, generic.ListView):
     permission_required = 'storeApp.can_set_active'
     def get_queryset(self):
         return ServiceListing.objects.filter(vendor=self.request.user.vendor)
-
-    # path('manage-products/create', views.ProductListingCreateView.as_view(), name='create-product'),
-    # path('manage-services/create', views.ServiceListingCreateView.as_view(), name='create-product'),
-    # path('manage-products/<uuid:pk>/update', views.ProductListingCreateView.as_view(), name='update-product'),
-    # path('manage-services/<uuid:pk>/update', views.ServiceListingCreateView.as_view(), name='update-service'),
 
 class ProductListingCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'storeApp.can_set_active'
@@ -158,22 +167,40 @@ class ServiceListingUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Upda
             raise Http404("You are not allowed to edit this service listing.")
         return super(ServiceListingUpdateView, self).dispatch(request, *args, **kwargs)
     # success_url = reverse_lazy('index')
-# class BookCreateView(CreateView):
-    # template_name = 'books/book-create.html'
-    # form_class = BookCreateForm
-# 
-    # def form_valid(self, form):
-        # self.object = form.save(commit=False)
-        # self.object.user = self.request.user
-        # self.object.save()
-        # return HttpResponseRedirect(self.get_success_url())
-# 
-    # def get_initial(self, *args, **kwargs):
-        # initial = super(BookCreateView, self).get_initial(**kwargs)
-        # initial['title'] = 'My Title'
-        # return initial
-# 
-    # def get_form_kwargs(self, *args, **kwargs):
-        # kwargs = super(BookCreateView, self).get_form_kwargs(*args, **kwargs)
-        # kwargs['user'] = self.request.user
-        # return kwargs
+
+@login_required
+def MyCartAddProductView(request, pID, qty):
+    """View cart function for customer."""
+    if pID and qty:
+        newCartProduct = CartProduct(user=request.user, product=ProductListing.objects.get(id=pID), quantity=qty)
+        newCartProduct.save()
+    elif request.sID:
+        newCartService = CartService(user=request.user, service=request.sID)
+        newCartService.save()
+
+    cart_products = CartProduct.objects.filter(user=request.user)
+    cart_services = CartService.objects.filter(user=request.user)
+
+    context = {
+        'cart_products': cart_products,
+        'cart_services': cart_services,
+    }
+    
+    return render(request, 'storeApp/customers/my_cart_detail.html', context)
+
+@login_required
+def MyCartAddServiceView(request, sID):
+    """View cart function for customer."""
+    if sID:
+        newCartService = CartService(user=request.user, service=ServiceListing.objects.get(id=sID))
+        newCartService.save()
+
+    cart_products = CartProduct.objects.filter(user=request.user)
+    cart_services = CartService.objects.filter(user=request.user)
+
+    context = {
+        'cart_products': cart_products,
+        'cart_services': cart_services,
+    }
+    
+    return render(request, 'storeApp/customers/my_cart_detail.html', context)
