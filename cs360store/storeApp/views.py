@@ -3,13 +3,13 @@ from django.shortcuts import render
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required, permission_required
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormMixin
 from django.urls import reverse, reverse_lazy
 from django.db.models import F
 # Create your views here.
 from django.contrib.auth.models import User
 
-from storeApp.forms import ProductListingCreateForm, ServiceListingCreateForm
+from storeApp.forms import CartProductUpdateForm, ProductListingCreateForm, ServiceListingCreateForm, CartProductForm
 from .models import ShippingAddress, BillingAddress, ProductTag, ServiceTag, Vendor, Invoice, ProductListing, ServiceListing, InvoiceProduct, InvoiceService, CartProduct, CartService, Cart
 # ------------------
 # Public Pages
@@ -41,8 +41,18 @@ class VendorDetailView(generic.DetailView):
 class ProductListView(generic.ListView):
     model = ProductListing
 
-class ProductDetailView(generic.DetailView):
+class ProductDetailView(generic.DetailView, FormMixin):
     model = ProductListing
+    form_class = CartProductForm
+    def get_initial(self):
+        return {
+            'product': self.get_object(),
+        }
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CartProductForm(initial={'qty':1})
+        return context
 
 class ServiceListView(generic.ListView):
     model = ServiceListing
@@ -156,52 +166,58 @@ class ServiceListingUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Upda
     # success_url = reverse_lazy('index')
 
 @login_required
-def MyCartAddProduct(request, pID, qty):
+def MyCartAddProduct(request, pID):
     """View cart function for customer."""
     success_url = reverse_lazy('my-cart')
-    if request.method=='GET':
-        cart, exists = Cart.objects.get_or_create(user=request.user)
-        q, exists = CartProduct.objects.get_or_create(cart=cart, product=ProductListing.objects.get(id=pID))
-        q.quantity = q.quantity + qty # possible race condition, can't see this one being an issue
-        q.save()
+    cart, exists= Cart.objects.get_or_create(user=request.user)
+
+    if request.method=='POST':
+        form=CartProductForm(request.POST)
+        if form.is_valid():
+            cp, exists = cart.cartproduct_set.get_or_create(cart=cart, product=ProductListing.objects.get(id=pID))
+            cp.quantity = cp.quantity + form.cleaned_data['qty']# possible race condition, can't see this one being an issue
+            if cp.quantity > 9999:
+                cp.quantity = 9999
+            cp.save()
     return HttpResponseRedirect(success_url)
 
 @login_required
-def MyCartAddService(request, sID):
-    """View cart function for customer."""
+def MyCartAddService(request, csID):
+    """View to add a product to cart"""
     success_url = reverse_lazy('my-cart')
-    cart, exists = Cart.objects.get_or_create(user=request.user)
-
-    newCartService = CartService(cart=cart, service=ServiceListing.objects.get(id=sID))
-    newCartService.save()
-    
+    cart, exists= Cart.objects.get_or_create(user=request.user)
+    if request.method=='POST':
+            cs, exists = cart.cartservice_set.get_or_create(cart=cart, service=ServiceListing.objects.get(id=csID))
+            if not exists:
+                cs.save()
     return HttpResponseRedirect(success_url)
 
 @login_required
-def MyCartRemoveProduct(request, pID, qty):
+def MyCartRemoveProduct(request, pID):
     """View cart function for customer."""
     success_url = reverse_lazy('my-cart')
-    cart, cart_exists = Cart.objects.get_or_create(user=request.user)
-    q = CartProduct.objects.get(cart=cart, product=ProductListing.objects.get(id=pID))
-    if q:
-        if qty <= 0:
-            q.delete()
-        else:
-            q.quantity = F('quantity') - qty
-            q.save()
+    cart, exists= Cart.objects.get_or_create(user=request.user)
 
+    if request.method=='POST':
+        form=CartProductForm(request.POST)
+        if form.is_valid():
+            cp, exists = cart.cartproduct_set.get_or_create(cart=cart, product=ProductListing.objects.get(id=pID))
+            cp.quantity = form.cleaned_data['qty']# possible race condition, can't see this one being an issue
+            if cp.quantity > 9999:
+                cp.quantity = 9999
+            elif cp.quantity < 0:
+                cp.quantity = 0
+            cp.save()
     return HttpResponseRedirect(success_url)
 
 @login_required
 def MyCartRemoveService(request, csID):
     """View cart function for customer."""
-    success_url = reverse_lazy('my-cart')
-    cart, exists = Cart.objects.get_or_create(user=request.user)
-
-    service_to_delete = CartService.objects.get(cart=cart, id=csID)
-    service_to_delete.delete()
-    
-    return HttpResponseRedirect(success_url)
+    cart, exists= Cart.objects.get_or_create(user=request.user)
+    if request.method=='POST':
+            cs = cart.cartservice_set.get(service=ServiceListing.objects.get(id=csID))
+            cs.delete()
+    return HttpResponseRedirect(reverse('my-cart'))
 
 @login_required
 def MyCartListView(request):
@@ -214,12 +230,13 @@ def MyCartListView(request):
 
     cart_products = CartProduct.objects.filter(cart=cart)
     cart_services = CartService.objects.filter(cart=cart)
-    cart_subtotal = cart.subtotal
+    cart_subtotal = cart.get_subtotal()
 
     context = {
         'cart_products': cart_products,
         'cart_services': cart_services,
         'subtotal': cart_subtotal,
+        'cproduct_remove_form': CartProductUpdateForm(),
     }
     
     return render(request, 'storeApp/customers/my_cart_detail.html', context)
@@ -235,10 +252,13 @@ def CheckOutView(request):
 
     cart_products = CartProduct.objects.filter(cart=cart)
     cart_services = CartService.objects.filter(cart=cart)
+    cart_subtotal = cart.get_subtotal()
 
     context = {
         'cart_products': cart_products,
         'cart_services': cart_services,
+        'subtotal': cart_subtotal,
+        'cproduct_remove_form': CartProductUpdateForm(),
     }
     
     return render(request, 'storeApp/customers/my_cart_detail.html', context)

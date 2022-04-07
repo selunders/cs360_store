@@ -12,7 +12,10 @@
     {% if servicelisting.list_tags %}
         <p>Tags: {{ servicelisting.list_tags}}</p>
     {% endif %}
-    <a href="{% url 'my-cart-add-service' sID=servicelisting.id %}" class="btn btn-primary">Add to cart</a>
-    <a href="javascript:history.go(-1)" class="btn btn-secondary">Back</a>
+    <form method="post" action="{% url 'my-cart-add-service' csID=servicelisting.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Add to cart</button>
+        <a href="javascript:history.go(-1)" class="btn btn-secondary">Back</a>
+    </form>    
 
 {% endblock content %}

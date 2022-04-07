@@ -1,7 +1,6 @@
-from ast import Delete
-from email.policy import default
 from django.db import models
 from datetime import datetime
+from decimal import Decimal
 from django.contrib.auth.models import User
 from django.urls import reverse # generate URLS by reversing URL patterns
 import uuid # for unique instances
@@ -105,12 +104,12 @@ class Invoice(models.Model):
     # @property
     # def total_payment(self):
         # """Return sum of payments for attached products/services."""
-        # return float(InvoiceProduct.objects.filter(invoice__exact=self.id).aggregate(total_payment=models.Sum(F('unit_price') * F('quantity_ordered'))).get('total_payment') or 0) \
-            # + float(InvoiceService.objects.filter(invoice__exact=self.id).aggregate(total_payment=models.Sum(F('price_paid'))).get('total_payment') or 0)
+        # return Decimal(InvoiceProduct.objects.filter(invoice__exact=self.id).aggregate(total_payment=models.Sum(F('unit_price') * F('quantity_ordered'))).get('total_payment') or 0) \
+            # + Decimal(InvoiceService.objects.filter(invoice__exact=self.id).aggregate(total_payment=models.Sum(F('price_paid'))).get('total_payment') or 0)
     
     def save(self, *args, **kwargs):
-        self.total_payment = float(InvoiceProduct.objects.filter(invoice__exact=self.id).aggregate(total_payment=models.Sum(F('unit_price') * F('quantity_ordered'))).get('total_payment') or 0) \
-            + float(InvoiceService.objects.filter(invoice__exact=self.id).aggregate(total_payment=models.Sum(F('price_paid'))).get('total_payment') or 0)
+        self.total_payment = Decimal(InvoiceProduct.objects.filter(invoice__exact=self.id).aggregate(total_payment=models.Sum(F('unit_price') * F('quantity_ordered'))).get('total_payment') or 0) \
+            + Decimal(InvoiceService.objects.filter(invoice__exact=self.id).aggregate(total_payment=models.Sum(F('price_paid'))).get('total_payment') or 0)
         super(Invoice, self).save(*args, **kwargs)
     # @property
     # def total_payment(self):
@@ -289,10 +288,13 @@ class Cart(models.Model):
         """Returns the url to access this order's page."""
         return reverse('my-orders-detail', args=[str(self.id)])
 
+    def get_subtotal(self):
+        return Decimal(self.cartproduct_set.all().aggregate(total_cost=models.Sum(F('product__price') * F('quantity'))).get('total_cost') or 0)
+
     def save(self, *args, **kwargs):
         CartProduct.objects.filter(cart=self, quantity__lte=0).delete()
-        self.subtotal = float(CartProduct.objects.filter(cart__exact=self.id).aggregate(total_cost=models.Sum(F('product__price') * F('quantity'))).get('total_cost') or 0) #\
-#            + float(CartService.objects.filter(cart__exact=self.id).aggregate(total_cost=models.Sum(F('service__price_paid'))).get('total_cost') or 0)
+        # self.subtotal = Decimal(self.cartproduct_set.all().aggregate(total_cost=models.Sum(F('product__price') * F('quantity'))).get('total_cost') or 0) #\
+#            + Decimal(CartService.objects.filter(cart__exact=self.id).aggregate(total_cost=models.Sum(F('service__price_paid'))).get('total_cost') or 0)
         super(Cart, self).save(*args, **kwargs)
     
 class CartProduct(models.Model):
@@ -311,7 +313,7 @@ class CartProduct(models.Model):
 
     def delete(self, *args, **kwargs):
         parentCart = self.cart
-        super(CartService, self).delete(*args, **kwargs)
+        super(CartProduct, self).delete(*args, **kwargs)
         parentCart.save()
     
 class CartService(models.Model):

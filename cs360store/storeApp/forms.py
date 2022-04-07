@@ -1,11 +1,12 @@
 import datetime
 
 from django import forms
-from django.forms import ModelForm
-from storeApp.models import ProductListing, ServiceListing
+from django.forms import ModelForm, formset_factory, inlineformset_factory
+from storeApp.models import ProductListing, ServiceListing, CartProduct, Cart
 
-from django.core.exceptions import ValidationError
+# from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import MaxValueValidator
 
 class ProductListingCreateForm(forms.ModelForm):
 
@@ -58,3 +59,23 @@ class ServiceListingCreateForm(forms.ModelForm):
     def clean_tags(self):
         data = self.cleaned_data['tags']
         return data
+
+class CartProductForm(forms.Form):
+    # product = forms.InlineForeignKeyField(ProductListing)
+    
+    qty = forms.IntegerField(help_text="(Max: 9999)")
+    def clean_qty(self):
+        data = self.cleaned_data['qty']
+        if data < 0 or data > 9999:
+            raise forms.ValidationError(_('Invalid QTY. Valid range: 0-9999'))
+        return data 
+
+class CartProductUpdateForm(forms.Form):
+    # product = forms.InlineForeignKeyField(ProductListing)
+    
+    qty = forms.IntegerField()
+    def clean_qty(self):
+        data = self.cleaned_data['qty']
+        if data < 0 or data > 9999:
+            raise forms.ValidationError(_('Invalid QTY. Valid range: 0-9999'))
+        return data 

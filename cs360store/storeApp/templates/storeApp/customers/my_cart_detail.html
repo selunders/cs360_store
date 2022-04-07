@@ -8,7 +8,14 @@
     <hr/>
     <ul>
         {% for cproduct in cart_products.all %}
-        <li><a href="{{ cproduct.product.get_absolute_url }}">{{ cproduct.product.name }}</a> | Qty: {{ cproduct.quantity }} @  ${{ cproduct.product.price }} each | <a href="{% url 'my-cart-remove-product' pID=cproduct.product.id qty=1 %}">Remove</a></li>
+        <li><a href="{{ cproduct.product.get_absolute_url }}">{{ cproduct.product.name }}</a> | Qty: {{ cproduct.quantity }} @  ${{ cproduct.product.price }} each
+        <form method="post" action="{% url 'my-cart-remove-product' pID=cproduct.product.id %}">
+            {% csrf_token %}
+        <table>
+            {{ cproduct_remove_form.as_table }}
+        </table>
+        <button type="submit" class="btn btn-secondary">Update QTY</button>
+        </form></li>
         {% endfor %}
     </ul>
     <hr/>
@@ -18,13 +25,19 @@
     <hr/>
     <ul>
         {% for cservice in cart_services.all %}
-        <li><a href="{{ cservice.service.get_absolute_url }}">{{ cservice.service.name }}</a> | <a href="{{ cservice.service.vendor.get_absolute_url }}">{{ cservice.service.vendor }}</a> | <a href="{% url 'my-cart-remove-service' cservice.id %}">Remove</a></li>
+        <li>
+            <form method="post" action="{% url 'my-cart-remove-service' csID=cservice.service.id %}">
+                {% csrf_token %}
+                <a href="{{ cservice.service.get_absolute_url }}">{{ cservice.service.name }}</a> | <a href="{{ cservice.service.vendor.get_absolute_url }}">{{ cservice.service.vendor }}</a> | <button type="submit" class="btn btn-link">Remove</button>
+            </form>    
+        </li>
+        
         {% endfor %}
     </ul>
     <hr/>
-    <h3>Subtotal:</h3>
-    <h4>${{ subtotal }}</h4>
     {% endif %}
+    <h3>Subtotal</h3>
+    <h4>$ {{ subtotal }}</h4>
     <a href="{% url 'check-out' %}" class="btn btn-primary">Check Out</a>
     {% comment %} <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a> {% endcomment %}
 {% endblock content %}

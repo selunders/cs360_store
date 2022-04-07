@@ -10,6 +10,12 @@
     {% if productlisting.list_tags %}
     <p>Tags: {{ productlisting.list_tags }}</p>
     {% endif %}
-    <a href="{% url 'my-cart-add-product' pID=productlisting.id qty=1 %}" class="btn btn-primary">Add to cart</a>
-    <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a>
+    <form action="{% url 'my-cart-add-product' pID=productlisting.id %}" method="post">
+        {% csrf_token %}
+        <table>
+          {{ form.as_table }}
+        </table>
+        <button type="submit" class="btn btn-primary">Add to cart</button>
+        <a href="javascript:history.go(-1)" class="btn btn-secondary">Back</a>
+      </form>
 {% endblock content %}

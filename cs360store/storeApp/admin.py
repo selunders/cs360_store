@@ -3,7 +3,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import ShippingAddress, BillingAddress, Vendor, Invoice, ProductListing, ServiceListing, InvoiceProduct, InvoiceService, ProductTag, ServiceTag, Cart
+from .models import CartProduct, ShippingAddress, BillingAddress, Vendor, Invoice, ProductListing, ServiceListing, InvoiceProduct, InvoiceService, ProductTag, ServiceTag, Cart
 
 # ------------------
 # ---- Inlines ----- 
@@ -36,6 +36,11 @@ class Inline_InvoiceService(admin.StackedInline):
             return ['vendor', 'price_paid', 'service']
         else:
             return ['vendor',]
+
+class Inline_CartProduct(admin.StackedInline):
+    model = CartProduct
+    fields = ['product','quantity']
+    extra = 0
 
 # class Inline_ProductListing(admin.TabularInline):
 class Inline_ProductListing(admin.StackedInline):
@@ -114,6 +119,7 @@ class ServiceListingAdmin(admin.ModelAdmin):
 
 class CartAdmin(admin.ModelAdmin):
     list_display = ('user', 'id', 'subtotal')
+    inlines = [Inline_CartProduct]
 
 admin.site.register(Vendor, VendorAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
