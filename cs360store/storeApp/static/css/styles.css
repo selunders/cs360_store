@@ -3,3 +3,9 @@
     padding: 0;
     list-style: none;
 }
+
+img {
+    border-radius: 14px;
+    box-shadow: 5px 5px 9px 0px rgba(0,0,0,0.1);
+    margin-bottom: 10px;
+}
