@@ -7,9 +7,11 @@
     {% if vendor.productlisting_set %}
     <ul>
         {% for product in vendor.productlisting_set.all %}
+        {% if product.active %}
         <li>
             <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
         </li>
+        {% endif %}
         {% endfor %}
     </ul>
     {% else %}
@@ -19,9 +21,11 @@
     {% if vendor.servicelisting_set %}
     <ul>
         {% for service in vendor.servicelisting_set.all %}
+        {% if service.active %}
         <li>
             <a href="{{ service.get_absolute_url }}">{{ service.name }}</a>
         </li>
+        {% endif %}
         {% endfor %}
     </ul>
     {% else %}
