@@ -94,6 +94,22 @@ class ManageServicesView(PermissionRequiredMixin, generic.ListView):
     def get_queryset(self):
         return ServiceListing.objects.filter(vendor=self.request.user.vendor)
 
+class ManageProductOrdersView(PermissionRequiredMixin, generic.ListView):
+    """Generic view for managing a vendor's sold products."""
+    model = InvoiceProduct
+    template_name = 'storeApp/vendors/manage_product_orders.html'
+    permission_required = 'storeApp.can_set_active'
+    def get_queryset(self):
+        return InvoiceProduct.objects.filter(vendor=self.request.user.vendor)
+
+class ManageServiceOrdersView(PermissionRequiredMixin, generic.ListView):
+    """Generic view for managing a vendor's sold products."""
+    model = InvoiceService
+    template_name = 'storeApp/vendors/manage_service_orders.html'
+    permission_required = 'storeApp.can_set_active'
+    def get_queryset(self):
+        return InvoiceService.objects.filter(vendor=self.request.user.vendor)
+
 class ProductListingCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'storeApp.can_set_active'
     template_name = 'storeApp/vendors/productlisting_form.html'

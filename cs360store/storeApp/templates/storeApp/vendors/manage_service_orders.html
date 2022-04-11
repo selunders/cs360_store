@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+{% block title %}<title>CS Store | Manage Service Orders</title{% endblock %}
+
+{% block content %}
+    <h1>Manage Service Orders</h1>
+    <ul>
+    {% if invoiceservice_list %}
+        {% for iservice in invoiceservice_list %}
+            <li>{{ iservice.invoice }} | {{ iservice.invoice.date_placed }} | {{ iservice.invoice.purchaser }}<br/>{{ iservice.service }}</li>
+        {% endfor %}
+    {% endif %}
+</ul>
+{% comment %} <a href="{% url 'create-service' %}" class="btn btn-primary">Add service</a> {% endcomment %}
+<a href="javascript:history.go(-1)" class="btn btn-secondary">Back</a>
+{% endblock content %}

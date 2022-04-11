@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+{% block title %}<title>CS Store | Manage Product Orders</title{% endblock %}
+
+{% block content %}
+    <h1>Manage Orders</h1>
+    <ul>
+    {% if invoiceproduct_list %}
+        {% for iproduct in invoiceproduct_list %}
+            <li>{{ iproduct.invoice }} | {{ iproduct.invoice.date_placed }} | {{ iproduct.invoice.purchaser }}<br/>{{ iproduct.product }} | {{ iproduct.quantity_ordered }} @ ${{ iproduct.unit_price }}</li>
+        {% endfor %}
+    {% endif %}
+</ul>
+{% comment %} <a href="{% url 'create-product' %}" class="btn btn-primary">Add product</a> {% endcomment %}
+<a href="javascript:history.go(-1)" class="btn btn-secondary">Back</a>
+{% endblock content %}

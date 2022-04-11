@@ -31,8 +31,11 @@
           {% if perms.storeApp.can_set_active %}
           <br/>
             <li>Managing {{ user.vendor.vendor_name }}</li>
-            <li><a href="{% url 'manage-products' %}">Manage Products</a></li>
-            <li><a href="{% url 'manage-services' %}">Manage Services</a></li>
+            <li><a href="{% url 'manage-products' %}">Manage Store Products</a></li>
+            <li><a href="{% url 'manage-services' %}">Manage Store Services</a></li>
+            <br/>
+            <li><a href="{% url 'manage-product-orders' %}">Manage Orders (Products)</a></li>
+            <li><a href="{% url 'manage-service-orders' %}">Manage Orders (Services)</a></li>
           {% endif %}
         </ul>
      {% endblock %}
