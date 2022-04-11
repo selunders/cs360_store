@@ -254,11 +254,20 @@ def CheckOutView(request):
     cart_services = CartService.objects.filter(cart=cart)
     cart_subtotal = cart.get_subtotal()
 
-    context = {
-        'cart_products': cart_products,
-        'cart_services': cart_services,
-        'subtotal': cart_subtotal,
-        'cproduct_remove_form': CartProductUpdateForm(),
-    }
+    if cart_products.exists() or cart_services.exists():
+        newInvoice = Invoice(purchaser = request.user, total_payment = cart_subtotal)
+        newInvoice.save()
+
+    if cart_products.exists():
+        for cproduct in cart_products:
+            newInvoiceProduct = InvoiceProduct(invoice = newInvoice, product = cproduct.product, unit_price = cproduct.product.price, quantity_ordered = cproduct.quantity)
+            newInvoiceProduct.save()
+            cproduct.delete()
     
-    return render(request, 'storeApp/customers/my_cart_detail.html', context)
+    if cart_services.exists():
+        for cservice in cart_services:
+            newInvoiceService = InvoiceService(invoice = newInvoice, service = cservice.service, price_paid = cservice.service.price)
+            newInvoiceService.save()
+            cservice.delete()
+
+    return HttpResponseRedirect(reverse('my-orders'))

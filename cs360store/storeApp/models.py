@@ -101,20 +101,11 @@ class Invoice(models.Model):
     def get_absolute_url(self):
         """Returns the url to access this order's page."""
         return reverse('my-orders-detail', args=[str(self.id)])
-    # @property
-    # def total_payment(self):
-        # """Return sum of payments for attached products/services."""
-        # return Decimal(InvoiceProduct.objects.filter(invoice__exact=self.id).aggregate(total_payment=models.Sum(F('unit_price') * F('quantity_ordered'))).get('total_payment') or 0) \
-            # + Decimal(InvoiceService.objects.filter(invoice__exact=self.id).aggregate(total_payment=models.Sum(F('price_paid'))).get('total_payment') or 0)
-    
+
     def save(self, *args, **kwargs):
         self.total_payment = Decimal(InvoiceProduct.objects.filter(invoice__exact=self.id).aggregate(total_payment=models.Sum(F('unit_price') * F('quantity_ordered'))).get('total_payment') or 0) \
             + Decimal(InvoiceService.objects.filter(invoice__exact=self.id).aggregate(total_payment=models.Sum(F('price_paid'))).get('total_payment') or 0)
         super(Invoice, self).save(*args, **kwargs)
-    # @property
-    # def total_payment(self):
-    #     """Return sum of payments for attached products/services."""
-    #     return self.total_products + self.total_services
 
 class ProductListing(models.Model):
     """Model representing a product for sale."""
