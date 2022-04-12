@@ -6,10 +6,10 @@
     <ul>
     {% if invoiceproduct_list %}
         {% for iproduct in invoiceproduct_list %}
-            <li>{{ iproduct.invoice }} | {{ iproduct.invoice.date_placed }} | {{ iproduct.invoice.purchaser }}<br/>{{ iproduct.product }} | {{ iproduct.quantity_ordered }} @ ${{ iproduct.unit_price }}</li>
+            <li>{{ iproduct.invoice }} | {{ iproduct.invoice.date_placed }} | {{ iproduct.invoice.purchaser }}<br/><a href="{{ iproduct.product.get_absolute_url }}">{{ iproduct.product.name }}</a> | {{ iproduct.quantity_ordered }} @ ${{ iproduct.unit_price }} | Status: {{ iproduct.status }} | <a href="{% url 'change-product-order-status' ipID=iproduct.id status='or' %}">Recieved</a> | <a href="{% url 'change-product-order-status' ipID=iproduct.id status='sh' %}">Shipped</a> | <a href="{% url 'change-product-order-status' ipID=iproduct.id status='cl' %}">Canceled</a></li><br/>
         {% endfor %}
     {% endif %}
 </ul>
 {% comment %} <a href="{% url 'create-product' %}" class="btn btn-primary">Add product</a> {% endcomment %}
-<a href="javascript:history.go(-1)" class="btn btn-secondary">Back</a>
+{% comment %} <a href="javascript:history.go(-1)" class="btn btn-secondary">Back</a> {% endcomment %}
 {% endblock content %}

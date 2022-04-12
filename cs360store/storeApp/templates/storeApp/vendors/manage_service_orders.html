@@ -6,7 +6,7 @@
     <ul>
     {% if invoiceservice_list %}
         {% for iservice in invoiceservice_list %}
-            <li>{{ iservice.invoice }} | {{ iservice.invoice.date_placed }} | {{ iservice.invoice.purchaser }}<br/>{{ iservice.service }}</li>
+            <li>{{ iservice.invoice }} | {{ iservice.invoice.date_placed }} | {{ iservice.invoice.purchaser }}<br/>{{ iservice.service }} | Status: {{ iservice.status }} | <a href="{% url 'change-service-order-status' isID=iservice.id status='sc' %}">Service Scheduled</a> | <a href="{% url 'change-service-order-status' isID=iservice.id status='cl' %}">Canceled</a> | <a href="{% url 'change-service-order-status' isID=iservice.id status='fl' %}">Fulfilled</a></li>
         {% endfor %}
     {% endif %}
 </ul>

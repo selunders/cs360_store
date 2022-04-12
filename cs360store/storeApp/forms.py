@@ -61,8 +61,6 @@ class ServiceListingCreateForm(forms.ModelForm):
         return data
 
 class CartProductForm(forms.Form):
-    # product = forms.InlineForeignKeyField(ProductListing)
-    
     qty = forms.IntegerField(help_text="(Max: 9999)")
     def clean_qty(self):
         data = self.cleaned_data['qty']
@@ -71,11 +69,9 @@ class CartProductForm(forms.Form):
         return data 
 
 class CartProductUpdateForm(forms.Form):
-    # product = forms.InlineForeignKeyField(ProductListing)
-    
     qty = forms.IntegerField()
     def clean_qty(self):
         data = self.cleaned_data['qty']
         if data < 0 or data > 9999:
             raise forms.ValidationError(_('Invalid QTY. Valid range: 0-9999'))
-        return data 
+        return data

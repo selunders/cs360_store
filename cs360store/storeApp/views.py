@@ -34,12 +34,14 @@ def index(request):
 
 class VendorListView(generic.ListView):
     model = Vendor
+    ordering = ['name']
 
 class VendorDetailView(generic.DetailView):
     model = Vendor
 
 class ProductListView(generic.ListView):
     model = ProductListing
+    ordering = ['name']
 
 class ProductDetailView(generic.DetailView, FormMixin):
     model = ProductListing
@@ -56,6 +58,7 @@ class ProductDetailView(generic.DetailView, FormMixin):
 
 class ServiceListView(generic.ListView):
     model = ServiceListing
+    ordering = ['name']
 
 class ServiceDetailView(generic.DetailView):
     model = ServiceListing
@@ -67,7 +70,7 @@ class MyOrdersListView(LoginRequiredMixin, generic.ListView):
     model = Invoice
     template_name = 'storeApp/customers/my_orders_list.html'
     def get_queryset(self):
-        return Invoice.objects.filter(purchaser=self.request.user)
+        return Invoice.objects.filter(purchaser=self.request.user).order_by('-date_placed')
 
 
 class MyOrdersDetailView(LoginRequiredMixin, generic.DetailView):
@@ -84,7 +87,7 @@ class ManageProductsView(PermissionRequiredMixin, generic.ListView):
     template_name = 'storeApp/vendors/manage_products.html'
     permission_required = 'storeApp.can_set_active'
     def get_queryset(self):
-        return ProductListing.objects.filter(vendor=self.request.user.vendor)
+        return ProductListing.objects.filter(vendor=self.request.user.vendor).order_by('name')
 
 class ManageServicesView(PermissionRequiredMixin, generic.ListView):
     """Generic view for managing a vendor's services."""
@@ -92,15 +95,16 @@ class ManageServicesView(PermissionRequiredMixin, generic.ListView):
     template_name = 'storeApp/vendors/manage_services.html'
     permission_required = 'storeApp.can_set_active'
     def get_queryset(self):
-        return ServiceListing.objects.filter(vendor=self.request.user.vendor)
+        return ServiceListing.objects.filter(vendor=self.request.user.vendor).order_by('name')
 
 class ManageProductOrdersView(PermissionRequiredMixin, generic.ListView):
     """Generic view for managing a vendor's sold products."""
     model = InvoiceProduct
     template_name = 'storeApp/vendors/manage_product_orders.html'
     permission_required = 'storeApp.can_set_active'
+    paginate_by = 10
     def get_queryset(self):
-        return InvoiceProduct.objects.filter(vendor=self.request.user.vendor)
+        return InvoiceProduct.objects.filter(vendor=self.request.user.vendor).order_by('-invoice__date_placed', 'invoice__purchaser')
 
 class ManageServiceOrdersView(PermissionRequiredMixin, generic.ListView):
     """Generic view for managing a vendor's sold products."""
@@ -108,7 +112,7 @@ class ManageServiceOrdersView(PermissionRequiredMixin, generic.ListView):
     template_name = 'storeApp/vendors/manage_service_orders.html'
     permission_required = 'storeApp.can_set_active'
     def get_queryset(self):
-        return InvoiceService.objects.filter(vendor=self.request.user.vendor)
+        return InvoiceService.objects.filter(vendor=self.request.user.vendor).order_by('-invoice__date_placed', 'invoice__purchaser')
 
 class ProductListingCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'storeApp.can_set_active'
@@ -287,3 +291,27 @@ def CheckOutView(request):
             cservice.delete()
 
     return HttpResponseRedirect(reverse('my-orders'))
+
+@login_required
+def InvoiceProductStatusUpdate(request, ipID, status):
+    """View to change a invoiceproduct's status"""
+    success_url = reverse_lazy('manage-product-orders')
+    iproduct = InvoiceProduct.objects.get(id=ipID)
+    if request.user.vendor == iproduct.product.vendor:
+        iproduct.status = status
+        iproduct.save()
+    else:
+        raise Http404("You are not allowed to edit this invoice listing.")
+    return HttpResponseRedirect(success_url)
+
+@login_required
+def InvoiceServiceStatusUpdate(request, isID, status):
+    """View to change a invoiceservice's status"""
+    success_url = reverse_lazy('manage-service-orders')
+    iservice = InvoiceService.objects.get(id=isID)
+    if request.user.vendor == iservice.service.vendor:
+        iservice.status = status
+        iservice.save()
+    else:
+        raise Http404("You are not allowed to edit this invoice listing.")
+    return HttpResponseRedirect(success_url)

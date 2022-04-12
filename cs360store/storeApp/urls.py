@@ -37,6 +37,9 @@ urlpatterns += [
     path('manage-services/', views.ManageServicesView.as_view(), name='manage-services'),
     path('manage-product-orders/', views.ManageProductOrdersView.as_view(), name='manage-product-orders'),
     path('manage-service-orders/', views.ManageServiceOrdersView.as_view(), name='manage-service-orders'),
+    path('manage-product-orders/update/<uuid:ipID>/<str:status>/', views.InvoiceProductStatusUpdate, name='change-product-order-status'),
+    path('manage-service-orders/update/<uuid:isID>/<str:status>/', views.InvoiceServiceStatusUpdate, name='change-service-order-status'),
+    # path('manage-product-orders/update/<uuid:pk>/<bool:status>/', views.InvoiceProductStatusUpdate, name='change-order-status'),
     # path('pending-orders/', views.PendingOrdersView.as_view(), name='pending-orders'),
     # path('fulfilled-orders/', views.FulfilledOrdersView.as_view(), name='fulfilled-orders'),
 ]

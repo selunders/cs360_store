@@ -232,7 +232,7 @@ class InvoiceService(models.Model):
     ORDER_STATUS = (
         ('sc', 'Scheduled'),
         ('cl', 'Canceled'),
-        ('cm', 'Completed'),
+        ('fl', 'Fulfilled'),
     )
     status = models.CharField(
         max_length=2,
@@ -242,8 +242,8 @@ class InvoiceService(models.Model):
         help_text='Order Status',
     )
 
-    def is_completed(self):
-        if self.status == 'cm':
+    def is_fulfilled(self):
+        if self.status == 'fl':
             return True
         return False
 
