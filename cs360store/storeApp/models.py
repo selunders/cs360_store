@@ -65,7 +65,7 @@ class ServiceTag(models.Model):
 
 class Vendor(models.Model):
     """Model representing a unique vendor."""
-    vendor_name = models.CharField(max_length=200, help_text="Enter your vendor name.", unique=True)
+    name = models.CharField(max_length=200, help_text="Enter your vendor name.", unique=True)
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
 
     phone_number = models.CharField(max_length=20, help_text="1 (234) 567 8901")
@@ -82,7 +82,7 @@ class Vendor(models.Model):
     date_created = models.DateTimeField(default=datetime.now, blank=True)
 
     def __str__(self):
-        return self.vendor_name
+        return self.name
 
     def get_absolute_url(self):
         """Returns the url to access this vendor's page."""
@@ -284,8 +284,8 @@ class Cart(models.Model):
 
     def save(self, *args, **kwargs):
         CartProduct.objects.filter(cart=self, quantity__lte=0).delete()
-        # self.subtotal = Decimal(self.cartproduct_set.all().aggregate(total_cost=models.Sum(F('product__price') * F('quantity'))).get('total_cost') or 0) #\
-#            + Decimal(CartService.objects.filter(cart__exact=self.id).aggregate(total_cost=models.Sum(F('service__price_paid'))).get('total_cost') or 0)
+        self.subtotal = Decimal(CartProduct.objects.filter(cart__exact=self.id).aggregate(total_payment=models.Sum(F('product__price') * F('quantity'))).get('total_payment') or 0) #\
+            # + Decimal(CartService.objects.filter(cart__exact=self.id).aggregate(total_payment=models.Sum(F('price_paid'))).get('total_payment') or 0)
         super(Cart, self).save(*args, **kwargs)
     
 class CartProduct(models.Model):

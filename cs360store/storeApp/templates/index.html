@@ -4,13 +4,12 @@
 
 {% block content %}
   <h1>CS360 Store</h1>
-  <p>Welcome to the CS360 Store, a website developed by <em>Seth Lunders & Donald Hammer</em>!</p>
-  <h2>Dynamic content</h2>
-  <p>The store has the following counts:</p>
+  <p>Welcome to the CS360 Store, a website developed by Seth Lunders &amp; Donald Hammer!</p>
+  <p><strong>Here's some stats about our store:</strong></p>
   <ul>
-    <li><strong>Vendors:</strong> {{ num_vendors }}</li>
-    <li><strong>Sales:</strong> {{ num_sales }}</li>
-    <li><strong>Products available:</strong> {{ num_productsActive }}</li>
-    <li><strong>Services available:</strong> {{ num_servicesActive }}</li>
+    <li>Vendors:</strong> {{ num_vendors }}</li>
+    <li>Sales: {{ num_sales }}</li>
+    <li>Products available: {{ num_productsActive }}</li>
+    <li>Services available: {{ num_servicesActive }}</li>
   </ul>
 {% endblock %}

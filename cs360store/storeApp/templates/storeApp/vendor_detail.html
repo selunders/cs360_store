@@ -1,8 +1,8 @@
 {% extends "base_generic.html" %}
-{% block title %}<title>CS Store | {{ vendor.vendor_name }}</title{% endblock %}
+{% block title %}<title>CS Store | {{ vendor.name }}</title{% endblock %}
 
 {% block content %}
-    <h1>{{ vendor.vendor_name }}</h1>
+    <h1>{{ vendor.name }}</h1>
     <h2>Products</h2>
     {% if vendor.productlisting_set %}
     <ul>

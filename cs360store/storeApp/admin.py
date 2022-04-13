@@ -17,7 +17,7 @@ class Inline_InvoiceProduct(admin.StackedInline):
     model = InvoiceProduct
     fieldsets = [(None, {'fields': ('product', 'vendor', 'unit_price', 'quantity_ordered', 'status')})]
     readonly_fields = ['vendor', 'unit_price']
-    # readonly_fields = ['vendor_name', 'product']
+    # readonly_fields = ['name', 'product']
     extra = 0
     def get_readonly_fields(self, request, obj=None):
         if obj: #This is the case when obj is already created i.e. it's an edit
@@ -29,7 +29,7 @@ class Inline_InvoiceService(admin.StackedInline):
     model = InvoiceService
     fieldsets = [(None, {'fields': ('service', 'vendor', 'price_paid', 'status')})]
     
-    # readonly_fields = ['vendor_name', 'service']
+    # readonly_fields = ['name', 'service']
     extra = 0
     def get_readonly_fields(self, request, obj=None):
         if obj: #This is the case when obj is already created i.e. it's an edit
@@ -76,11 +76,11 @@ class BillingAddress(admin.TabularInline):
     extra = 1
 
 class VendorAdmin(admin.ModelAdmin):
-    list_display = ('vendor_name', 'owner', 'date_created')
+    list_display = ('name', 'owner', 'date_created')
     fieldsets = [
         (None, 
         {
-            'fields':('vendor_name', 'owner', 'date_created')
+            'fields':('name', 'owner', 'date_created')
         }),
         ('Contact Info', {
             'fields': ('phone_number', 'emergency_phone_number'),
@@ -89,7 +89,7 @@ class VendorAdmin(admin.ModelAdmin):
             'fields': ('address1', 'address2', 'zip_code', 'city', 'state_or_province', 'country'),
         }),
     ]
-    search_fields = ['vendor_name']
+    search_fields = ['name']
 
     inlines = [Inline_ProductListing, Inline_ServiceListing]
 
