@@ -1,18 +1,27 @@
 {% extends "base_generic.html" %}
 {% block title %}<title>CS Store | Vendors</title{% endblock %}
+{% load humanize %}
 
 {% block content %}
     <h1>Vendors</h1>
     {% if vendor_list %}
-    <ul>
+    <div class="row">
         {% for vendor in vendor_list %}
-        <li>
-            <a href="{{ vendor.get_absolute_url }}">{{ vendor.name }}</a>
-            </li>
+            <div class="col-xs-1 col-sm-8 col-md-6 col-lg-3 mb-2">
+                <div class="card flex-grow-1">
+                    <img src="{{ vendor.logoURL }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ vendor.name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ vendor.owner }}</h6>
+                        <p class="card-text">{{ vendor.description|truncatechars:100 }}</p>
+                        <a href="{{ vendor.get_absolute_url }}" class="btn btn-primary">Details</a>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-    </ul>
+        </div>
     {% else %}
     <p>There are currently no active vendors.</p>
     {% endif %}
-    <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a>
+    {% comment %} <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a> {% endcomment %}
 {% endblock content %}

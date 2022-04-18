@@ -1,11 +1,12 @@
 {% extends "base_generic.html" %}
 {% block title %}<title>CS Store | {{ productlisting.name }}</title{% endblock %}
+{% load humanize %}
 
 {% block content %}
     <h1>{{ productlisting.name }}</h1>
     <p><a href="{{ productlisting.vendor.get_absolute_url }}">{{ productlisting.vendor.name }}</a></p>
     <img src="{{ productlisting.imageURL }}"/>
-    <p>${{ productlisting.price }} | {% if productlisting.quantity_available %}{{ productlisting.quantity_available }} in stock{% else %}Back in stock {{ productlisting.restockDate }}{% endif %}</p>
+    <p>${{ productlisting.price|intcomma }} | {% if productlisting.quantity_available %}{{ productlisting.quantity_available|intcomma }} in stock{% else %}Back in stock {{ productlisting.restockDate }}{% endif %}</p>
     <p>{{ productlisting.description }}</p>
     {% if productlisting.list_tags %}
     <p>Tags: {{ productlisting.list_tags }}</p>

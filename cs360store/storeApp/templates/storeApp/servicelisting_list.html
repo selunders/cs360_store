@@ -1,18 +1,27 @@
 {% extends "base_generic.html" %}
 {% block title %}<title>CS Store | Services</title{% endblock %}
+{% load humanize %}
 
 {% block content %}
     <h1>Available Services</h1>
     {% if servicelisting_list %}
-    <ul>
-        {% for service in servicelisting_list %}
+        <div class="row">
+            {% for service in servicelisting_list %}
             {% if service.active %}
-                <li>
-                    <a href="{{ service.get_absolute_url }}">{{ service.name }} | ${{ service.price }}{% if service.price_per_hour %} per hour{% endif %}</a> | <a href="{{ service.vendor.get_absolute_url }}">{{ service.vendor.name }}</a>
-                </li>
+            <div class="col-xs-1 col-sm-8 col-md-6 col-lg-3 mb-2">
+                <div class="card flex-grow-1">
+                    <img src="{{ service.imageURL }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ service.name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ service.price|intcomma }}{% if service.price_per_hour %}(per hour){% endif %}</h6>
+                        <p class="card-text">{{ service.description|truncatechars:100 }}</p>
+                        <a href="{{ service.get_absolute_url }}" class="btn btn-primary">Details</a>
+                    </div>
+                </div>
+            </div>
             {% endif %}
-        {% endfor %}
-    </ul>
+            {% endfor %}
+        </div>
     {% else %}
         <p>There are currently no available services.</p>
     {% endif %}

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # My additions
     'storeApp.apps.StoreappConfig',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [

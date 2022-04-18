@@ -1,5 +1,6 @@
 {% extends "base_generic.html" %}
 {% block title %}<title>CS Store | Products</title{% endblock %}
+  {% load humanize %}
 
 {% block content %}
     <h1 class="display-5">Products</h1>
@@ -15,7 +16,7 @@
                     <img src="{{ product.imageURL }}" class="card-img-top" alt="...">
                     <div class="card-body">
                       <h5 class="card-title">{{ product.name }}</h5>
-                      <h6 class="card-subtitle mb-2 text-muted">{{ product.price }}</h6>
+                      <h6 class="card-subtitle mb-2 text-muted">{{ product.price|intcomma }} | {{ product.vendor }}</h6>
                       <p class="card-text">{{ product.description|truncatechars:100 }}</p>
                       <a href="{{ product.get_absolute_url }}" class="btn btn-primary">Details</a>
                     </div>

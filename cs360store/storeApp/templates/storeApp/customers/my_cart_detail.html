@@ -1,43 +1,64 @@
 {% extends "base_generic.html" %}
 {% block title %}<title>CS Store | Cart</title{% endblock %}
+{% load humanize %}
 
 {% block content %}
     <h1>Your cart</h1>
-    {% if cart_products.all %}
-    <h2>Products</h2>    
-    <hr/>
-    <ul>
-        {% for cproduct in cart_products.all %}
-        <li><a href="{{ cproduct.product.get_absolute_url }}">{{ cproduct.product.name }}</a> | Qty: {{ cproduct.quantity }} @  ${{ cproduct.product.price }} each
-        <form method="post" action="{% url 'my-cart-remove-product' pID=cproduct.product.id %}">
-            {% csrf_token %}
-        <table>
-            {{ cproduct_remove_form.as_table }}
-        </table>
-        <button type="submit" class="btn btn-secondary">Update QTY</button>
-        </form></li>
+    {% if cart_products.all or cart_services.all %}
+        {% if cart_products.all %}
+        <h2>Products</h2>    
+        <hr/>
+        <div class="row">
+        {% for cproduct in  user.cart.cartproduct_set.all %}
+            <div class="card mb-3 mr-3" style="max-width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-4 d-flex align-items-center justify-content-center">
+                        {% comment %} <div class="col-md-6 col d-flex align-items-center justify-content-center"> {% endcomment %}
+                    <img src="{{ cproduct.product.imageURL }}" class="img-fluid rounded-start px-2" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ cproduct.product.name }}</h5>
+                        <p class="card-text">{{ cproduct.quantity }} @ ${{ cproduct.product.price|intcomma }} each</p>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        <form method="post" action="{% url 'my-cart-remove-product' pID=cproduct.product.id %}">
+                            {% csrf_token %}
+                        <table>
+                            {{ cproduct_remove_form.as_p }}
+                        </table>
+                        <button type="submit" class="btn btn-secondary">Update QTY</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-    </ul>
-    <hr/>
-    {% endif %}
-    {% if cart_services.all %}
-    <h2>Services</h2>    
-    <hr/>
-    <ul>
-        {% for cservice in cart_services.all %}
-        <li>
-            <form method="post" action="{% url 'my-cart-remove-service' csID=cservice.service.id %}">
-                {% csrf_token %}
-                <a href="{{ cservice.service.get_absolute_url }}">{{ cservice.service.name }}</a> | <a href="{{ cservice.service.vendor.get_absolute_url }}">{{ cservice.service.vendor }}</a> | <button type="submit" class="btn btn-link">Remove</button>
-            </form>    
-        </li>
-        
-        {% endfor %}
-    </ul>
+        </div>
+        <hr/>
+        {% endif %}
+        {% if cart_services.all %}
+        <h2>Services</h2>    
+        <hr/>
+        <div class="card">
+            <ul class="list-group list-group-flush">
+            {% for cservice in cart_services.all %}
+            <li class="list-group-item">
+                <form method="post" action="{% url 'my-cart-remove-service' csID=cservice.service.id %}">
+                    {% csrf_token %}
+                    <a href="{{ cservice.service.get_absolute_url }}">{{ cservice.service.name }}</a> | <a href="{{ cservice.service.vendor.get_absolute_url }}">{{ cservice.service.vendor }}</a> | <button type="submit" class="btn btn-link">Remove</button>
+                </form>    
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
     <hr/>
     {% endif %}
     <h3>Subtotal</h3>
-    <h4>$ {{ subtotal }}</h4>
+    <h4>$ {{ subtotal|floatformat:"2"|intcomma }}</h4>
     <a href="{% url 'check-out' %}" class="btn btn-primary">Check Out</a>
+    {% else %}
+    <h2>Add something to your cart to get started!</h2>
+        <a href="{% url 'products' %}" class="btn btn-primary">Products</a>
+        <a href="{% url 'services' %}" class="btn btn-primary">Services</a>
+    {% endif %}
     {% comment %} <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a> {% endcomment %}
 {% endblock content %}

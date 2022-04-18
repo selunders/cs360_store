@@ -1,35 +1,54 @@
 {% extends "base_generic.html" %}
 {% block title %}<title>CS Store | {{ vendor.name }}</title{% endblock %}
-
+{% load humanize %}
 {% block content %}
     <h1>{{ vendor.name }}</h1>
-    <h2>Products</h2>
+    <hr class="w-25"/>
+    <h2 class="pt-4">Products</h2>
+    <hr/>
     {% if vendor.productlisting_set %}
-    <ul>
-        {% for product in vendor.productlisting_set.all %}
+    <div class="row">
+        {% for product in vendor.productlisting_set.all|slice:"0:10" %}
         {% if product.active %}
-        <li>
-            <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
-        </li>
+        <div class="col-xs-1 col-sm-8 col-md-6 col-lg-3 mb-2">
+          <div class="card flex-grow-1">
+            <img src="{{ product.imageURL }}" class="card-img-top" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">{{ product.name }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">{{ product.price|intcomma }} | {{ product.vendor }}</h6>
+              <p class="card-text">{{ product.description|truncatechars:100 }}</p>
+              <a href="{{ product.get_absolute_url }}" class="btn btn-primary">Details</a>
+            </div>
+          </div>
+        </div>
         {% endif %}
         {% endfor %}
-    </ul>
+    </div>
     {% else %}
     <p>There are currently no active products.</p>
     {% endif %}
-    <h2>Services</h2>
+    <h2 class="pt-4">Services</h2>
+    <hr/>
     {% if vendor.servicelisting_set %}
-    <ul>
-        {% for service in vendor.servicelisting_set.all %}
+    <div class="row">
+        {% for service in vendor.servicelisting_set.all|slice:"0:10" %}
         {% if service.active %}
-        <li>
-            <a href="{{ service.get_absolute_url }}">{{ service.name }}</a>
-        </li>
+        <div class="col-xs-1 col-sm-8 col-md-6 col-lg-3 mb-2">
+            <div class="card flex-grow-1">
+                <img src="{{ service.imageURL }}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{ service.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ service.price|intcomma }}{% if service.price_per_hour %}(per hour){% endif %}</h6>
+                    <p class="card-text">{{ service.description|truncatechars:100 }}</p>
+                    <a href="{{ service.get_absolute_url }}" class="btn btn-primary">Details</a>
+                </div>
+            </div>
+        </div>
         {% endif %}
         {% endfor %}
-    </ul>
+    </div>
     {% else %}
     <p>There are currently no active services.</p>
     {% endif %}
-    <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a>
+    {% comment %} <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a> {% endcomment %}
 {% endblock content %}

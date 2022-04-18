@@ -1,6 +1,44 @@
 {% extends "base_generic.html" %}
 
 {% block title %}<title>CS Store | Home</title>{% endblock %}
+{% load humanize %}
+{% block sidebar %}
+  <ul class="sidebar-nav">
+  {% if user.is_authenticated %}
+  <h3>Welcome, {{ user.first_name }}</h3>
+  {% endif %}
+  {% if user.cart.cartproduct_set.all or user.cart.cartservice_set.all %}
+  <hr/>
+  <div class="card">
+    <div class="card-header">
+      Cart
+    </div>
+    <ul class="list-group list-group-flush">
+      {% if user.cart.cartproduct_set.all %}
+      {% for cproduct in  user.cart.cartproduct_set.all %}
+        <li class="list-group-item">{{ cproduct.product.name }} | {{ cproduct.quantity }} | ${% widthratio cproduct.quantity 1 cproduct.product.price %}</li>
+      {% endfor %}
+      {% endif %}
+    </ul>
+    <div class="card-footer text-muted">
+      ${{ user.cart.subtotal|intcomma }}
+      <a class="btn btn-primary d-block w-auto mt-1" href="{% url 'my-cart' %}">Check out</a>
+    </div>
+  </div>
+  {% comment %} <hr/> {% endcomment %}
+  {% else %}
+  <p>Add something to your cart to get started!</p>
+  {% endif %}
+  <h3>Popular<br/>Product Tags</h3>
+  <hr/>
+    <ul>
+      {% for tag in top_producttags %}
+        <li><a href="{{ tag.get_absolute_url }}" class="btn btn-link">{{ tag.name|title }}</a></li> 
+      {% endfor %}
+    </ul>
+{% comment %} <h3>Popular<br/>Service Categories</h3> {% endcomment %}
+<hr/>
+{% endblock sidebar %}
 
 {% block content %}
   <h1>CS360 Store</h1>
