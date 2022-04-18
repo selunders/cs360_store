@@ -41,6 +41,7 @@ class BillingAddress(models.Model):
 class ProductTag(models.Model):
     """Model representing a tag for a product."""
     name = models.CharField(max_length=200, help_text="Enter a tag; i.e. \"electronics\"", primary_key=True, unique=True)
+    viewcount = models.IntegerField(default=0)
     # product = models.ManyToManyField(ProductListing, blank=True)
     def __str__(self):
         return str(self.name)
@@ -49,9 +50,17 @@ class ProductTag(models.Model):
         self.name = self.name.lower()
         return super(ProductTag, self).save(*args, **kwargs)
 
+    class Meta:
+        ordering = ['viewcount']
+
+    def get_absolute_url(self):
+        """Returns the url to access related products"""
+        return reverse('product-detail', args=[str(self.name)])
+
 class ServiceTag(models.Model):
     """Model representing a tag for a service."""
     name = models.CharField(max_length=200, help_text="Enter a tag; i.e. \"electronics\"", primary_key=True, unique=True)
+    viewcount = models.IntegerField(default=0)
     # service = models.ManyToManyField(ServiceListing, blank=True)
     def __str__(self):
         return str(self.name)
@@ -59,6 +68,13 @@ class ServiceTag(models.Model):
     def save(self, *args, **kwargs):
         self.name = self.name.lower()
         return super(ServiceTag, self).save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['viewcount']
+
+    def get_absolute_url(self):
+        """Returns the url to related services."""
+        return reverse('product-detail', args=[str(self.name)])
 # class BillingAddress(ShippingAddress):
     # tax_number = models.IntegerField(max_length=10, help_text="Tax Number")
 
@@ -67,7 +83,8 @@ class Vendor(models.Model):
     """Model representing a unique vendor."""
     name = models.CharField(max_length=200, help_text="Enter your vendor name.", unique=True)
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
-
+    logoURL = models.URLField(max_length=200, help_text="Enter image URL", default="https://picsum.photos/400/300")
+    description = models.TextField()
     phone_number = models.CharField(max_length=20, help_text="1 (234) 567 8901")
     emergency_phone_number = models.CharField(max_length=20, help_text="1 (234) 567 8901")
 

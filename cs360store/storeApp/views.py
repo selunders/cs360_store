@@ -22,12 +22,14 @@ def index(request):
     num_sales = Invoice.objects.count()
     num_productsActive = ProductListing.objects.filter(active=True).count()
     num_servicesActive = ServiceListing.objects.filter(active=True).count()
+    top_producttags = ProductTag.objects.all()[:5]
 
     context = {
         'num_vendors': num_vendors,
         'num_sales': num_sales,
         'num_productsActive':  num_productsActive,
         'num_servicesActive': num_servicesActive,
+        'top_producttags': top_producttags,
     }
 
     return render(request, 'index.html', context = context)

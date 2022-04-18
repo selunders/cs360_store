@@ -1,3 +1,4 @@
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +13,7 @@
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark" aria-label="Fourth navbar example">
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark pl-3 pr-3" aria-label="Fourth navbar example">
     <div class="container-fluid">
       <a class="navbar-brand" href="{% url 'index' %}">CS360 Store</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,10 +21,11 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarsExample04">
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
-          <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'index' %}">Home</a></li>
-          <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'products' %}active{% endif %}" href="{% url 'products' %}">Products</a></li>
-          <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'services' %}active{% endif %}" href="{% url 'services' %}">Services</a></li>
-          <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'vendors' %}active{% endif %}" href="{% url 'vendors' %}">Vendors</a></li>
+          {% comment %} <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'index' %}"><ion-icon name="home" size="large"></ion-icon>&nbsp;&nbsp;</a></li> {% endcomment %}
+          <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'vendors' or request.resolver_match.url_name == 'vendor-detail' %}active{% endif %}" href="{% url 'vendors' %}"><ion-icon name="storefront" size="large"></ion-icon>&nbsp;&nbsp;</a></li>
+          <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'products' or request.resolver_match.url_name == 'product-detail' %}active{% endif %}" href="{% url 'products' %}"><ion-icon name="bag-handle" size="large"></ion-icon>&nbsp;&nbsp;</a></li>
+          <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'services' or request.resolver_match.url_name == 'service-detail' %}active{% endif %}" href="{% url 'services' %}"><ion-icon name="today" size="large"></ion-icon>&nbsp;&nbsp;</a></li>
+          <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'my-cart' %}active{% endif %}" href="{% url 'my-cart' %}"><ion-icon name="cart" size="large"></ion-icon>&nbsp;&nbsp;</a></li>
         </ul>
         {% comment %} <div class="flex-grow-1 mx-lg-5">
           <form>
@@ -33,10 +35,9 @@
         <ul class="navbar-nav">
           {% if user.is_authenticated %}
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'my-cart' or request.resolver_match.url_name == 'my-orders' or request.resolver_match.url_name == 'logout' %}active{% endif %}" href="#" id="dropdown04" data-bs-toggle="dropdown" aria-expanded="false">My account</a>
-            <ul class="dropdown-menu" aria-labelledby="dropdown04">
+            <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'my-cart' or request.resolver_match.url_name == 'my-orders' or request.resolver_match.url_name == 'logout' %}active{% endif %}" href="#" id="dropdown04" data-bs-toggle="dropdown" aria-expanded="false"><ion-icon name="person-circle-outline" size="large"></ion-icon></a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown04">
               {% comment %} <li>Welcome, {{ user.first_name }}!</li> {% endcomment %}
-              <li><a class="dropdown-item" href="{% url 'my-cart' %}">View Cart</a></li>
               <li><a class="dropdown-item" href="{% url 'my-orders' %}">View Orders</a></li>
               <li><a class="dropdown-item" href="{% url 'logout' %}">Log out</a></li>
             </ul>
@@ -46,8 +47,8 @@
           {% endif %}
           {% if perms.storeApp.can_set_active %}
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'manage-products' or request.resolver_match.url_name == 'manage-services' or request.resolver_match.url_name == 'manage-product-orders' or request.resolver_match.url_name == 'manage-service-orders' %}active{% endif %}" href="#" id="dropdown05" data-bs-toggle="dropdown" aria-expanded="false">Manage Store</a>
-            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+            <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'manage-products' or request.resolver_match.url_name == 'manage-services' or request.resolver_match.url_name == 'manage-product-orders' or request.resolver_match.url_name == 'manage-service-orders' %}active{% endif %}" href="#" id="dropdown05" data-bs-toggle="dropdown" aria-expanded="false"><ion-icon name="storefront" size="large"></ion-icon></a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown05">
               {% comment %} <li>Managing {{ user.vendor.name }}</li> {% endcomment %}
               <li><a class="dropdown-item" href="{% url 'manage-products' %}">Products</a></li>
               <li><a class="dropdown-item" href="{% url 'manage-services' %}">Services</a></li>
@@ -62,7 +63,7 @@
   </nav>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-sm-2">
+      <div class="col-md-2">
       {% block sidebar %}
         <ul class="sidebar-nav">
           {% if user.is_authenticated %}
@@ -70,23 +71,30 @@
           {% endif %}
           {% if user.cart.cartproduct_set.all or user.cart.cartservice_set.all %}
           <hr/>
-          <h4 class="mb-3">Cart:</h4>
+          <div class="card">
+            <div class="card-header">
+              Cart
+            </div>
+            <ul class="list-group list-group-flush">
+              {% if user.cart.cartproduct_set.all %}
+              {% for cproduct in  user.cart.cartproduct_set.all %}
+                <li class="list-group-item">{{ cproduct.product.name }} | {{ cproduct.quantity }} | ${% widthratio cproduct.quantity 1 cproduct.product.price %}</li>
+              {% endfor %}
+              {% endif %}
+            </ul>
+            <div class="card-footer text-muted">
+              ${{ user.cart.subtotal|intcomma }}
+              <a class="btn btn-primary d-block w-auto mt-1" href="{% url 'my-cart' %}">Check out</a>
+            </div>
+          </div>
+          {% comment %} <hr/> {% endcomment %}
           {% else %}
           <p>Add something to your cart to get started!</p>
           {% endif %}
-          {% if user.cart.cartproduct_set.all %}
-            <ul>
-              {% for cproduct in  user.cart.cartproduct_set.all %}
-              <li>{{ cproduct.product.name }} ({{ cproduct.quantity }})</li>
-              {% endfor %}
-            </ul>
-            <hr/>
-            <p>${{ user.cart.subtotal }}</p>
-            <a class="btn btn-primary mt-2" href="{% url 'my-cart' %}">Check out</a>
-          {% endif %}
+
      {% endblock %}
       </div>
-      <div class="col-sm-10 ">{% block content %}{% endblock %}{% block pagination %} {% if is_paginated %}
+      <div class="col-md-10">{% block content %}{% endblock %}{% block pagination %} {% if is_paginated %}
         <div class="pagination">
           <span class="page-links">
             {% if page_obj.has_previous %}
@@ -109,5 +117,7 @@
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 </html>
