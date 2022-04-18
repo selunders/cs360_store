@@ -3,7 +3,8 @@
   {% load humanize %}
 
 {% block content %}
-    <h1 class="display-5">'{{ tag|title }}' Products</h1>
+    <h1 class="display-5">'{{ tag|title }}' Products<small class="text-muted"> Views: {{ tag.viewcount }}</small></h1>
+    
     <form action="">
         <input class="form-control mb-3 product-search-form" type="text" placeholder="Search" aria-label="Search">
     </form>

@@ -337,6 +337,12 @@ def ProductTagDetailView(request, pk, page=1):
             product_list = paginator.page(page)
         except EmptyPage:
             product_list = paginator.page(paginator.num_pages)
+        hasViewed = request.session.get('viewed_producttag_%s' % tag.name)
+        if not hasViewed:
+            request.session['viewed_producttag_%s' % tag.name] = True
+            tag.viewcount = F('viewcount') + 1
+            tag.save()
+            tag.refresh_from_db()
         context = {
             'tag': tag,
             'productlisting_list': product_list,
@@ -359,6 +365,9 @@ def ServiceTagDetailView(request, pk, page=1):
             'tag': tag,
             'servicelisting_list': service_list,
         }
+        if not request.session['viewed_servicetag_%s' % tag.name]:
+            request.session['viewed_serviccetag_%s' % tag.name] = True
+            tag.viewcount = F('viewcount') + 1
         return render(request, 'storeApp/servicetag_detail.html', context)
     else:
         raise Http404("This tag was not found.")
