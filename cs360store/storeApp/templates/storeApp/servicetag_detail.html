@@ -1,0 +1,32 @@
+{% extends "base_generic.html" %}
+{% block title %}<title>CS Store | </title{% endblock %}
+  {% load humanize %}
+
+{% block content %}
+    <h1 class="display-5">'{{ tag|title }}' Services</h1>
+    <form action="">
+        <input class="form-control mb-3 product-search-form" type="text" placeholder="Search" aria-label="Search">
+    </form>
+    {% if servicelisting_list %}
+    <div class="row">
+      {% for service in servicelisting_list %}
+      {% if service.active %}
+      <div class="col-xs-1 col-sm-8 col-md-6 col-lg-3 mb-2">
+          <div class="card flex-grow-1">
+              <img src="{{ service.imageURL }}" class="card-img-top" alt="...">
+              <div class="card-body">
+                  <h5 class="card-title">{{ service.name }}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">{{ service.price|intcomma }}{% if service.price_per_hour %}(per hour){% endif %}</h6>
+                  <p class="card-text">{{ service.description|truncatechars:100 }}</p>
+                  <a href="{{ service.get_absolute_url }}" class="btn btn-primary">Details</a>
+              </div>
+          </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+    {% else %}
+        <p>There are currently no available services.</p>
+    {% endif %}
+    {% comment %} <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a> {% endcomment %}
+{% endblock content %}

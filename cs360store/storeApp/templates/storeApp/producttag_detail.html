@@ -1,0 +1,32 @@
+{% extends "base_generic.html" %}
+{% block title %}<title>CS Store | </title{% endblock %}
+  {% load humanize %}
+
+{% block content %}
+    <h1 class="display-5">'{{ tag|title }}' Products</h1>
+    <form action="">
+        <input class="form-control mb-3 product-search-form" type="text" placeholder="Search" aria-label="Search">
+    </form>
+    {% if productlisting_list %}
+    <div class="row">
+        {% for product in productlisting_list %}
+            {% if product.active %}
+                <div class="col-xs-1 col-sm-6 col-md-4 col-lg-2 mb-2">
+                  <div class="card flex-grow-1">
+                    <img src="{{ product.imageURL }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ product.name }}</h5>
+                      <h6 class="card-subtitle mb-2 text-muted">{{ product.price|intcomma }} | {{ product.vendor }}</h6>
+                      <p class="card-text">{{ product.description|truncatechars:100 }}</p>
+                      <a href="{{ product.get_absolute_url }}" class="btn btn-primary">Details</a>
+                    </div>
+                  </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% else %}
+        <p>There are currently no available products.</p>
+    {% endif %}
+    {% comment %} <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a> {% endcomment %}
+{% endblock content %}

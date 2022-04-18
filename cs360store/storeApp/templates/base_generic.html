@@ -50,8 +50,8 @@
             <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'manage-products' or request.resolver_match.url_name == 'manage-services' or request.resolver_match.url_name == 'manage-product-orders' or request.resolver_match.url_name == 'manage-service-orders' %}active{% endif %}" href="#" id="dropdown05" data-bs-toggle="dropdown" aria-expanded="false"><ion-icon name="storefront" size="large"></ion-icon></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown05">
               {% comment %} <li>Managing {{ user.vendor.name }}</li> {% endcomment %}
-              <li><a class="dropdown-item" href="{% url 'manage-products' %}">Products</a></li>
-              <li><a class="dropdown-item" href="{% url 'manage-services' %}">Services</a></li>
+              <li><a class="dropdown-item" href="{% url 'manage-products' %}">Manage Products</a></li>
+              <li><a class="dropdown-item" href="{% url 'manage-services' %}">Manage Services</a></li>
               <li><a class="dropdown-item" href="{% url 'manage-product-orders' %}">Orders (Products)</a></li>
               <li><a class="dropdown-item" href="{% url 'manage-service-orders' %}">Orders (Services)</a></li>
             </ul>
@@ -91,7 +91,20 @@
           {% else %}
           <p>Add something to your cart to get started!</p>
           {% endif %}
-
+          <hr/>
+          <h6>Popular Product Tags</h6>
+          <ul class="list-unstyled">
+            {% for tag in top_producttags %}
+            <li><a href="{{ tag.get_absolute_url }}" class="btn btn-link py-0">{{ tag.name|title }}</a></li> 
+            {% endfor %}
+          </ul>
+          <hr/>
+          <h6>Popular Service Tags:</p>
+          <ul class="list-unstyled">
+            {% for tag in top_servicetags %}
+            <li><a href="{{ tag.get_absolute_url }}" class="btn btn-link py-0">{{ tag.name|title }}</a></li> 
+            {% endfor %}
+          </ul>
      {% endblock %}
       </div>
       <div class="col-md-10">{% block content %}{% endblock %}{% block pagination %} {% if is_paginated %}

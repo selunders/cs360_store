@@ -51,11 +51,11 @@ class ProductTag(models.Model):
         return super(ProductTag, self).save(*args, **kwargs)
 
     class Meta:
-        ordering = ['viewcount']
+        ordering = ['-viewcount']
 
     def get_absolute_url(self):
         """Returns the url to access related products"""
-        return reverse('product-detail', args=[str(self.name)])
+        return reverse('product-tag-detail', args=[str(self.name), 1])
 
 class ServiceTag(models.Model):
     """Model representing a tag for a service."""
@@ -70,11 +70,11 @@ class ServiceTag(models.Model):
         return super(ServiceTag, self).save(*args, **kwargs)
 
     class Meta:
-        ordering = ['viewcount']
+        ordering = ['-viewcount']
 
     def get_absolute_url(self):
         """Returns the url to related services."""
-        return reverse('product-detail', args=[str(self.name)])
+        return reverse('service-tag-detail', args=[str(self.name), 1])
 # class BillingAddress(ShippingAddress):
     # tax_number = models.IntegerField(max_length=10, help_text="Tax Number")
 

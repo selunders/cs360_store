@@ -7,7 +7,8 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormMi
 from django.urls import reverse, reverse_lazy
 from django.db.models import F
 # Create your views here.
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from django.core.paginator import Paginator, EmptyPage
 
 from storeApp.forms import CartProductUpdateForm, ProductListingCreateForm, ServiceListingCreateForm, CartProductForm
 from .models import ShippingAddress, BillingAddress, ProductTag, ServiceTag, Vendor, Invoice, ProductListing, ServiceListing, InvoiceProduct, InvoiceService, CartProduct, CartService, Cart
@@ -22,14 +23,14 @@ def index(request):
     num_sales = Invoice.objects.count()
     num_productsActive = ProductListing.objects.filter(active=True).count()
     num_servicesActive = ServiceListing.objects.filter(active=True).count()
-    top_producttags = ProductTag.objects.all()[:5]
+    # top_producttags = ProductTag.objects.all()[:5]
 
     context = {
         'num_vendors': num_vendors,
         'num_sales': num_sales,
         'num_productsActive':  num_productsActive,
         'num_servicesActive': num_servicesActive,
-        'top_producttags': top_producttags,
+        # 'top_producttags': top_producttags,
     }
 
     return render(request, 'index.html', context = context)
@@ -44,6 +45,10 @@ class VendorDetailView(generic.DetailView):
 class ProductListView(generic.ListView):
     model = ProductListing
     ordering = ['name']
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['top_tags'] = ProductTag.objects.all()[:5]
+    #     return context
 
 class ProductDetailView(generic.DetailView, FormMixin):
     model = ProductListing
@@ -61,6 +66,10 @@ class ProductDetailView(generic.DetailView, FormMixin):
 class ServiceListView(generic.ListView):
     model = ServiceListing
     ordering = ['name']
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['top_tags'] = ServiceTag.objects.all()[:5]
+    #     return context
 
 class ServiceDetailView(generic.DetailView):
     model = ServiceListing
@@ -317,3 +326,39 @@ def InvoiceServiceStatusUpdate(request, isID, status):
     else:
         raise Http404("You are not allowed to edit this invoice listing.")
     return HttpResponseRedirect(success_url)
+
+def ProductTagDetailView(request, pk, page=1):
+    """View tag's related products."""
+    tag = ProductTag.objects.get(name=pk)
+    product_list = tag.productlisting_set.all()
+    paginator = Paginator(product_list, 20)
+    if tag:
+        try:
+            product_list = paginator.page(page)
+        except EmptyPage:
+            product_list = paginator.page(paginator.num_pages)
+        context = {
+            'tag': tag,
+            'productlisting_list': product_list,
+        }
+        return render(request, 'storeApp/producttag_detail.html', context)
+    else:
+        raise Http404("This tag was not found.")
+
+def ServiceTagDetailView(request, pk, page=1):
+    """View tag's related services."""
+    tag = ServiceTag.objects.get(name=pk)
+    service_list = tag.servicelisting_set.all()
+    paginator = Paginator(service_list, 20)
+    if tag:
+        try:
+            service_list = paginator.page(page)
+        except EmptyPage:
+            service_list = paginator.page(paginator.num_pages)
+        context = {
+            'tag': tag,
+            'servicelisting_list': service_list,
+        }
+        return render(request, 'storeApp/servicetag_detail.html', context)
+    else:
+        raise Http404("This tag was not found.")
