@@ -4,13 +4,50 @@
 {% load humanize %}
 
 {% block content %}
-  <h1>CS360 Store</h1>
-  <p>Welcome to the CS360 Store, a website developed by Seth Lunders &amp; Donald Hammer!</p>
-  <p><strong>Here's some stats about our store:</strong></p>
-  <ul>
-    <li>Vendors:</strong> {{ num_vendors }}</li>
-    <li>Sales: {{ num_sales }}</li>
-    <li>Products available: {{ num_productsActive }}</li>
-    <li>Services available: {{ num_servicesActive }}</li>
-  </ul>
+  <h1 class="display-1">CS360 Store</h1>
+  <h5 class="text-muted">Welcome to the CS360 Store, a website developed by Seth Lunders &amp; Donald Hammer!</h5>
+  <h6 class="display-6"><strong>Here's some stats about our store:</strong></h6>
+  <div class="row">
+    <div class="col-xs-1 col-sm-6 col-md-4 col-lg-4 mb-2">
+      <div class="card flex-grow-1">
+        <div class="card-body">
+        <h5 class="card-title">Vendors</h5>
+        {% comment %} <h6 class="card-subtitle mb-2 text-muted"></h6> {% endcomment %}
+        <p class="card-text">We currently have <strong>{{ num_vendors }}</strong> vendors on our site.</p>
+        <a href="{% url 'vendors' %}" class="btn btn-primary">See Vendors</a>
+      </div>
+    </div>
+    </div>
+    <div class="col-xs-1 col-sm-6 col-md-4 col-lg-4 mb-2">
+      <div class="card flex-grow-1">
+        <div class="card-body">
+        <h1 class="card-title text-center my-1 display-1">{{ num_sales }}</h1>
+        {% comment %} <h6 class="card-subtitle mb-2 text-muted"></h6> {% endcomment %}
+        <p class="card-text text-center">sales to date.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-1 col-sm-6 col-md-4 col-lg-4 mb-2">
+    <div class="card flex-grow-1">
+      <div class="card-body">
+        <h5 class="card-title">Products</h5>
+        {% comment %} <h6 class="card-subtitle mb-2 text-muted"></h6> {% endcomment %}
+        <p class="card-text">We currently have <strong>{{ num_productsActive }}</strong> products listed on our site.</p>
+        <a href="{% url 'products' %}" class="btn btn-primary">View Products</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-1 col-sm-6 col-md-4 col-lg-4 mb-2">
+    <div class="card flex-grow-1">
+      <div class="card-body">
+        <h5 class="card-title">Services</h5>
+        {% comment %} <h6 class="card-subtitle mb-2 text-muted"></h6> {% endcomment %}
+        <p class="card-text">We currently have <strong>{{ num_servicesActive }}</strong> services available!</p>
+        <a href="{% url 'services' %}" class="btn btn-primary">View Services</a>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
