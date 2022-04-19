@@ -24,7 +24,6 @@ def index(request):
     num_productsActive = ProductListing.objects.filter(active=True).count()
     num_servicesActive = ServiceListing.objects.filter(active=True).count()
     # top_producttags = ProductTag.objects.all()[:5]
-
     context = {
         'num_vendors': num_vendors,
         'num_sales': num_sales,
@@ -80,6 +79,7 @@ class ServiceDetailView(generic.DetailView):
 class MyOrdersListView(LoginRequiredMixin, generic.ListView):
     model = Invoice
     template_name = 'storeApp/customers/my_orders_list.html'
+    paginate_by = 10
     def get_queryset(self):
         return Invoice.objects.filter(purchaser=self.request.user).order_by('-date_placed')
 

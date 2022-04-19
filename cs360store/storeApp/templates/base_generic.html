@@ -35,7 +35,7 @@
         <ul class="navbar-nav">
           {% if user.is_authenticated %}
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'my-cart' or request.resolver_match.url_name == 'my-orders' or request.resolver_match.url_name == 'logout' %}active{% endif %}" href="#" id="dropdown04" data-bs-toggle="dropdown" aria-expanded="false"><ion-icon name="person-circle-outline" size="large"></ion-icon></a>
+            <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'my-orders' or request.resolver_match.url_name == 'logout' %}active{% endif %}" href="#" id="dropdown04" data-bs-toggle="dropdown" aria-expanded="false"><ion-icon name="person-circle-outline" size="large"></ion-icon></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown04">
               {% comment %} <li>Welcome, {{ user.first_name }}!</li> {% endcomment %}
               <li><a class="dropdown-item" href="{% url 'my-orders' %}">View Orders</a></li>
@@ -108,8 +108,8 @@
      {% endblock %}
       </div>
       <div class="col-md-10">{% block content %}{% endblock %}{% block pagination %} {% if is_paginated %}
-        <div class="pagination">
-          <span class="page-links">
+        <div class="pagination mt-3">
+          <span class="page-links w-100 text-center">
             {% if page_obj.has_previous %}
             <a
               href="{{ request.path }}?page={{page_obj.previous_page_number }}"
