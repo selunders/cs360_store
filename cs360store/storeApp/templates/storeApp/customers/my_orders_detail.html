@@ -2,27 +2,32 @@
 {% block title %}<title>CS Store | Manage Products</title{% endblock %}
 
 {% block content %}
-    <h1>Order #{{ invoice.id }}</h1>
+    <h1>Order <small class="text-muted">#{{ invoice.id }}</small></h1>
     <p>{{ invoice.date_placed }}</p>
     {% if invoice.invoiceproduct_set.all %}
-    <h2>Products</h2>    
-    <hr/>
-    <ul>
-        {% for iproduct in invoice.invoiceproduct_set.all %}
-        <li><a href="{{ iproduct.product.get_absolute_url }}">{{ iproduct.product.name }}</a> | ${{ iproduct.unit_price }} | qty: {{ iproduct.quantity_ordered }} | {% if iproduct.is_shipped %}Shipped!{% elif iproduct.is_canceled %}Order Canceled{% else %}Preparing for shipment{% endif %}</li>
-        {% endfor %}
-    </ul>
+    <div class="card">
+        <div class="card-header">
+            Products
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for iproduct in invoice.invoiceproduct_set.all %}
+                <li class="list-group-item"><a href="{{ iproduct.product.get_absolute_url }}">{{ iproduct.product.name }}</a> | <a href="{{ iproduct.product.vendor.get_absolute_url }}">{{ iproduct.product.vendor }}</a> | ${{ iproduct.unit_price }} | qty: {{ iproduct.quantity_ordered }} | {% if iproduct.is_shipped %}Shipped!{% elif iproduct.is_canceled %}Order Canceled{% else %}Preparing for shipment{% endif %}</li>
+            {% endfor %}
+        </ul>
+    </div>
     <hr/>
     {% endif %}
     {% if invoice.invoiceservice_set.all %}
-    <h2>Services</h2>    
-    <hr/>
-    <ul>
-        {% for iservice in invoice.invoiceservice_set.all %}
-        <li><a href="{{ iservice.service.get_absolute_url }}">{{ iservice.service.name }}</a> | <a href="{{ iservice.service.vendor.get_absolute_url }}">{{ iservice.service.vendor }}</a> |  ${{ iservice.price_paid }} | {% if iservice.is_shipped %}Complete!{% elif iservice.is_canceled %}Cancelled{% else %}Service scheduled{% endif %}</li>
-        {% endfor %}
-    </ul>
-    <hr/>
+    <div class="card mb-3">
+        <div class="card-header">
+            Services
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for iservice in invoice.invoiceservice_set.all %}
+            <li class="list-group-item"><a href="{{ iservice.service.get_absolute_url }}">{{ iservice.service.name }}</a> | <a href="{{ iservice.service.vendor.get_absolute_url }}">{{ iservice.service.vendor }}</a> |  ${{ iservice.price_paid }} | {% if iservice.is_shipped %}Complete!{% elif iservice.is_canceled %}Cancelled{% else %}Service scheduled{% endif %}</li>
+            {% endfor %}
+        </ul>
+    </div>
     {% endif %}
     <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a>
 {% endblock content %}

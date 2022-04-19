@@ -1,14 +1,19 @@
 {% extends "base_generic.html" %}
 {% block title %}<title>CS Store | Orders</title>{% endblock %}
-
+{% load humanize %}
 {% block content %}
-<h1>Your Orders</h1>
+{% comment %} <h1>Your Orders</h1> {% endcomment %}
 {% if invoice_list %}
-    <ul>
-    {% for invoice in invoice_list %}
-        <li><a href="{{ invoice.get_absolute_url }}">{{ invoice.date_placed }} | ${{ invoice.total_payment }} | {{ invoice.id }}</a></li>
-    {% endfor %}
-    </ul>
+<div class="card mt-5 mb-2">
+    <div class="card-header">
+        Orders
+    </div>
+    <ul class="list-group list-group-flush">
+        {% for invoice in invoice_list %}
+            <li class="list-group-item"><a href="{{ invoice.get_absolute_url }}" class="btn btn-secondary">Details</a>&nbsp;&nbsp;&nbsp;{{ invoice.date_placed }} | ${{ invoice.total_payment|intcomma }}</li>
+          {% endfor %}
+        </ul>
+    </div>
 {% endif %}
-<a href="javascript:history.go(-1)" class="btn btn-primary">Back</a>
+<a href="javascript:history.go(-1)" class="btn btn-primary ms-3">Back</a>
 {% endblock content %}
