@@ -5,7 +5,7 @@
 {% block content %}
     <h1>{{ productlisting.name }}</h1>
     <p><a href="{{ productlisting.vendor.get_absolute_url }}">{{ productlisting.vendor.name }}</a></p>
-    <img src="{{ productlisting.imageURL }}"/>
+    <img src="{{ productlisting.imageURL }}" class="img-fluid"/>
     <p>${{ productlisting.price|intcomma }} | {% if productlisting.quantity_available %}{{ productlisting.quantity_available|intcomma }} in stock{% else %}Back in stock {{ productlisting.restockDate }}{% endif %}</p>
     <p>{{ productlisting.description }}</p>
     {% if productlisting.list_tags %}

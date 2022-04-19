@@ -5,7 +5,7 @@
     <h1>{{ servicelisting.name }}</h1>
     <p><a href="{{ servicelisting.vendor.get_absolute_url }}">{{ servicelisting.vendor.name }}</a></p>
     
-    <img src="{{ servicelisting.imageURL }}"/>
+    <img src="{{ servicelisting.imageURL }}" class="img-fluid"/>
     <p>${{ servicelisting.price }}{% if servicelisting.price_per_hour %} per hour{% endif %} | {{ servicelisting.days_available }}</p>
     <p>{{ servicelisting.description }}</p>
     
