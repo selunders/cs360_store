@@ -2,14 +2,18 @@
 {% block title %}<title>CS Store | Manage Services</title{% endblock %}
 
 {% block content %}
-    <h1>Manage services</h1>
-    <ul>
+    <h1>Manage Services</h1>
+    <div class="card">
+        Services
+    </div>
+    <ul class="list-group list-group-flush">
     {% if servicelisting_list %}
         {% for service in servicelisting_list %}
-            <li><a href="{% url 'update-service' service.id %}">{{ service.name }} | ${{ service.price }}{% if service.price_per_hour %} per hour{% endif %}{% if service.active %}{% else %} | <span class="text-danger">Inactive</span>{% endif %}</a></li>
+            <li class="list-group-item"><a href="{% url 'update-service' service.id %}">{{ service.name }} | ${{ service.price }}{% if service.price_per_hour %} per hour{% endif %}{% if service.active %}{% else %} | <span class="text-danger">Inactive</span>{% endif %}</a></li>
         {% endfor %}
     {% endif %}
 </ul>
-<a href="{% url 'create-service' %}" class="btn btn-primary">Add service</a>
+</div>
+<a href="{% url 'create-service' %}" class="btn btn-primary mt-3">Add service</a>
 {% comment %} <a href="javascript:history.go(-1)" class="btn btn-secondary">Back</a> {% endcomment %}
 {% endblock content %}

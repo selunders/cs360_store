@@ -330,7 +330,7 @@ def InvoiceServiceStatusUpdate(request, isID, status):
 def ProductTagDetailView(request, pk, page=1):
     """View tag's related products."""
     tag = ProductTag.objects.get(name=pk)
-    product_list = tag.productlisting_set.all()
+    product_list = tag.productlisting_set.filter(active=True)
     paginator = Paginator(product_list, 20)
     if tag:
         try:
@@ -354,20 +354,23 @@ def ProductTagDetailView(request, pk, page=1):
 def ServiceTagDetailView(request, pk, page=1):
     """View tag's related services."""
     tag = ServiceTag.objects.get(name=pk)
-    service_list = tag.servicelisting_set.all()
+    service_list = tag.servicelisting_set.filter(active=True)
     paginator = Paginator(service_list, 20)
     if tag:
         try:
             service_list = paginator.page(page)
         except EmptyPage:
             service_list = paginator.page(paginator.num_pages)
+        hasViewed = request.session.get('viewed_servicetag_%s' % tag.name)
+        if not hasViewed:
+            request.session['viewed_servicetag_%s' % tag.name] = True
+            tag.viewcount = F('viewcount') + 1
+            tag.save()
+            tag.refresh_from_db()
         context = {
             'tag': tag,
             'servicelisting_list': service_list,
         }
-        if not request.session['viewed_servicetag_%s' % tag.name]:
-            request.session['viewed_serviccetag_%s' % tag.name] = True
-            tag.viewcount = F('viewcount') + 1
         return render(request, 'storeApp/servicetag_detail.html', context)
     else:
         raise Http404("This tag was not found.")

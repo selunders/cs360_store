@@ -63,7 +63,7 @@
   </nav>
   <div class="container-fluid">
     <div class="row mb-3">
-      <div class="col-md-2">
+      <div class="col-lg-2">
       {% block sidebar %}
         <ul class="sidebar-nav d-none d-lg-block">
           {% if user.is_authenticated %}
@@ -88,10 +88,10 @@
             </div>
           </div>
           {% comment %} <hr/> {% endcomment %}
-          {% else %}
-          <p>Add something to your cart to get started!</p>
-          {% endif %}
+          {% comment %} {% else %}
+          <p>Add something to your cart to get started!</p> {% endcomment %}
           <hr/>
+          {% endif %}
           <div class="d-none d-lg-block">
           <h6>Popular Product Tags</h6>
           <ul class="list-unstyled">
@@ -109,7 +109,7 @@
         </div>
      {% endblock %}
       </div>
-      <div class="col-md-10">{% block content %}{% endblock %}{% block pagination %} {% if is_paginated %}
+      <div class="col-lg-10">{% block content %}{% endblock %}{% block pagination %} {% if is_paginated %}
         <div class="pagination mt-3">
           <span class="page-links w-100 text-center">
             {% if page_obj.has_previous %}

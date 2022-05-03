@@ -1,6 +1,8 @@
-{% extends "base_generic.html" %} {% block title %}<title>CS Store | Home</title
->{% endblock %} {% load humanize %} {% block content %}
-<h1 class="display-1">CS360 Store</h1>
+{% extends "base_generic.html" %} {% block title %}<title>CS Store | Home</title>{% endblock %}
+{% load humanize %}
+{% block content %}
+<h1 class="display-3">CS360 Store</h1>
+<hr class="w-50"/>
 <h5 class="text-muted">
   Welcome to the CS360 Store, a website developed by Seth Lunders &amp; Donald
   Hammer!
@@ -10,57 +12,38 @@
   <div class="col">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Vendors</h5>
+        <h2 class="display-2 my-0">{{ num_vendors }} <small class="text-muted">Vendors</small></h2>
         {% comment %}
         <h6 class="card-subtitle mb-2 text-muted"></h6>
         {% endcomment %}
         <p class="card-text">
-          We currently have <strong>{{ num_vendors }}</strong> vendors on our
-          site.
+          Check them out below:
         </p>
-        <a href="{% url 'vendors' %}" class="btn btn-primary">See Vendors</a>
+        <a href="{% url 'vendors' %}" class="btn btn-primary d-block mt-3">All Vendors</a>
       </div>
     </div>
   </div>
   <div class="col">
     <div class="card">
       <div class="card-body">
-        <h1 class="card-title text-center my-1 display-1">{{ num_sales }}</h1>
-        {% comment %}
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-        {% endcomment %}
-        <p class="card-text text-center">sales to date.</p>
+        <h2 class="display-2 my-0">{{ num_productsActive }} <small class="text-muted">Products</small></h2>
+        <a href="{% url 'products' %}" class="btn btn-primary d-block mt-3">View Products</a>
       </div>
     </div>
   </div>
   <div class="col">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Products</h5>
-        {% comment %}
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-        {% endcomment %}
-        <p class="card-text">
-          We currently have <strong>{{ num_productsActive }}</strong> products
-          listed on our site.
-        </p>
-        <a href="{% url 'products' %}" class="btn btn-primary">View Products</a>
+          <h2 class="display-2 my-0">{{ num_servicesActive }} <small class="text-muted">Services</small></h2>
+          <a href="{% url 'services' %}" class="btn btn-primary d-block mt-3">View Services</a>
       </div>
     </div>
   </div>
   <div class="col">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Services</h5>
-        {% comment %}
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-        {% endcomment %}
-        <p class="card-text">
-          We currently have <strong>{{ num_servicesActive }}</strong> services
-          available!
-        </p>
-        <a href="{% url 'services' %}" class="btn btn-primary">View Services</a>
-      </div>
+        <h2 class="display-2 my-0">{{ num_sales }} <small class="text-muted">Sales</small></h2>
+    </div>
     </div>
   </div>
 </div>
