@@ -3,11 +3,11 @@
   {% load humanize %}
 
 {% block content %}
-    <h1 class="display-5">'{{ tag|title }}' Products<small class="text-muted"> Views: {{ tag.viewcount }}</small></h1>
+    <h1 class="display-5">'{{ tag|title }}' Products<small class="text-muted"> Unique Views: {{ tag.viewcount }}</small></h1>
     
-    <form action="">
+    {% comment %} <form action="">
         <input class="form-control mb-3 product-search-form" type="text" placeholder="Search" aria-label="Search">
-    </form>
+    </form> {% endcomment %}
     {% if productlisting_list %}
     <div class="row">
         {% for product in productlisting_list %}
@@ -25,7 +25,8 @@
                 </div>
             {% endif %}
         {% endfor %}
-    </div>
+      </div>
+      <a href="javascript:history.go(-1)" class="btn btn-secondary">Back</a>
     {% else %}
         <p>There are currently no available products.</p>
     {% endif %}

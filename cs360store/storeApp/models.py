@@ -6,7 +6,7 @@ from django.urls import reverse # generate URLS by reversing URL patterns
 import uuid # for unique instances
 from django.db.models import F # for better database access
 from django.core.validators import MaxValueValidator
-
+from storeApp.utils import randomPhoto
 # Create your models here.
 
 class ShippingAddress(models.Model):
@@ -83,7 +83,7 @@ class Vendor(models.Model):
     """Model representing a unique vendor."""
     name = models.CharField(max_length=200, help_text="Enter your vendor name.", unique=True)
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
-    logoURL = models.URLField(max_length=200, help_text="Enter image URL", default="https://picsum.photos/400/300")
+    logoURL = models.URLField(max_length=200, help_text="Enter image URL", default=randomPhoto())
     description = models.TextField()
     phone_number = models.CharField(max_length=20, help_text="1 (234) 567 8901")
     emergency_phone_number = models.CharField(max_length=20, help_text="1 (234) 567 8901")
@@ -129,7 +129,7 @@ class ProductListing(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this particular order", editable=False)
     active = models.BooleanField(default=True)
     name = models.CharField(max_length=200, help_text="Enter a name for your product.")
-    imageURL = models.URLField(max_length=200, help_text="Enter image URL", default="https://picsum.photos/400/300")
+    imageURL = models.URLField(max_length=200, help_text="Enter image URL", default=randomPhoto())
     # price = models.DecimalField(max_digits=7, decimal_places=2) # allows max price of $99,999.99
     price = models.DecimalField(decimal_places=2, max_digits=7) # allows max price of $99,999.99
     description = models.TextField()
@@ -161,7 +161,7 @@ class ServiceListing(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this particular service", editable=False)
     active = models.BooleanField(default=True)
     name = models.CharField(max_length=200, help_text="Enter a name for your service.")
-    imageURL = models.URLField(max_length=200, help_text="Enter image URL", blank="True", null=True, default="https://picsum.photos/400/300")
+    imageURL = models.URLField(max_length=200, help_text="Enter image URL", blank="True", null=True, default=randomPhoto())
     price = models.DecimalField(help_text="Max: 99,999.99. Set 0 \'Free\'", max_digits=7, decimal_places=2) # allows max price of $99,999.99
     price_per_hour = models.BooleanField(help_text="Is this service priced per hour?", default=False)
     description = models.TextField()

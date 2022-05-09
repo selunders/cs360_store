@@ -9,7 +9,8 @@
     <p>${{ productlisting.price|intcomma }} | {% if productlisting.quantity_available %}{{ productlisting.quantity_available|intcomma }} in stock{% else %}Back in stock {{ productlisting.restockDate }}{% endif %}</p>
     <p>{{ productlisting.description }}</p>
     {% if productlisting.list_tags %}
-    <p>Tags: {{ productlisting.list_tags }}</p>
+    {% comment %} <p>Tags: {{ productlisting.list_tags }}</p> {% endcomment %}
+    <p>Tags: {% for tag in productlisting.tags.all %}<a href="{{ tag.get_absolute_url }}">{{ tag }}</a> {% endfor %}</p>
     {% endif %}
     <form action="{% url 'my-cart-add-product' pID=productlisting.id %}" method="post">
         {% csrf_token %}

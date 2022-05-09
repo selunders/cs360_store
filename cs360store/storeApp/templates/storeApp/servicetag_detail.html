@@ -3,10 +3,10 @@
   {% load humanize %}
 
 {% block content %}
-    <h1 class="display-5">'{{ tag|title }}' Services<small class="text-muted"> Views: {{ tag.viewcount }}</small></h1>
-    <form action="">
+    <h1 class="display-5">'{{ tag|title }}' Services<small class="text-muted"> Unique Views: {{ tag.viewcount }}</small></h1>
+    {% comment %} <form action="">
         <input class="form-control mb-3 product-search-form" type="text" placeholder="Search" aria-label="Search">
-    </form>
+    </form> {% endcomment %}
     {% if servicelisting_list %}
     <div class="row">
       {% for service in servicelisting_list %}

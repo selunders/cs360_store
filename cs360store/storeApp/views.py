@@ -377,54 +377,53 @@ def ServiceTagDetailView(request, pk, page=1):
     else:
         raise Http404("This tag was not found.")
 
-def ProductSearchRankedExactView(request, page=1):
-    """View tag's related services."""
-    searchTerms = []
-    for q in request.GET.values():
-        searchTerms.append(q)
-    productList = ProductListing.objects.filter(active=True)
-    for q in searchTerms:
-        productList = productList.filter(Q(name__contains=q) | Q(description__contains=q))
-    paginator = Paginator(productList, 20)
-    try:
-        productList = paginator.page(page)
-    except EmptyPage:
-        productList = paginator.page(paginator.num_pages)
-    context = {
-        'productlisting_list': productList,
-    }
-    print(searchTerms)
-    return render(request, 'storeApp/search/product-search.html', context)
+# def ProductSearchRankedExactView(request, page=1):
+#     """View tag's related services."""
+#     searchTerms = []
+#     for q in request.GET.values():
+#         searchTerms.append(q)
+#     productList = ProductListing.objects.filter(active=True)
+#     for q in searchTerms:
+#         productList = productList.filter(Q(name__contains=q) | Q(description__contains=q))
+#     paginator = Paginator(productList, 20)
+#     try:
+#         productList = paginator.page(page)
+#     except EmptyPage:
+#         productList = paginator.page(paginator.num_pages)
+#     context = {
+#         'productlisting_list': productList,
+#     }
+#     print(searchTerms)
+#     return render(request, 'storeApp/search/product-search.html', context)
 
-def ProductSearchClosestRankedView(request, page=1):
-    """View tag's related services."""
-    searchTerms = []
-    for q in request.GET.values():
-        searchTerms.append(q)
-    productList = ProductListing.objects.filter(active=True)#.filter(Q(name__contains=searchTerms[0]) | Q(description__contains=searchTerms[0])))
-    # This for loop shouldn't return empty sets, if any of the queries return a result
-    for q in searchTerms:
-        nextQuery = productList.filter(Q(name__contains=q) | Q(description__contains=q))
-        if nextQuery:
-            productList = nextQuery
-        else:
-            pass
-    paginator = Paginator(productList, 20)
-    try:
-        productList = paginator.page(page)
-    except EmptyPage:
-        productList = paginator.page(paginator.num_pages)
-    context = {
-        'productlisting_list': productList,
-    }
-    print(searchTerms)
-    return render(request, 'storeApp/search/product-search.html', context)
+# def ProductSearchClosestRankedView(request, page=1):
+#     """View tag's related services."""
+#     searchTerms = []
+#     for q in request.GET.values():
+#         searchTerms.append(q)
+#     productList = ProductListing.objects.filter(active=True)#.filter(Q(name__contains=searchTerms[0]) | Q(description__contains=searchTerms[0])))
+#     # This for loop shouldn't return empty sets, if any of the queries return a result
+#     for q in searchTerms:
+#         nextQuery = productList.filter(Q(name__contains=q) | Q(description__contains=q))
+#         if nextQuery:
+#             productList = nextQuery
+#         else:
+#             pass
+#     paginator = Paginator(productList, 20)
+#     try:
+#         productList = paginator.page(page)
+#     except EmptyPage:
+#         productList = paginator.page(paginator.num_pages)
+#     context = {
+#         'productlisting_list': productList,
+#     }
+#     print(searchTerms)
+#     return render(request, 'storeApp/search/product-search.html', context)
 
 def ProductSearchView(request, type, page=1):
     """View tag's related services."""
     searchType = type
     searchTerms = []
-    productList = ProductListing.objects.filter(active=True)
     # print(request.POST.query)
     if request.method=='POST':
         form=ProductSearchForm(request.POST)
@@ -432,15 +431,23 @@ def ProductSearchView(request, type, page=1):
             for q in form.cleaned_data['query'].split():
                 searchTerms.append(q)
             if searchType == 'exact':
+                productList = ProductListing.objects.filter(active=True)
                 for q in searchTerms:
                     productList = productList.filter(Q(name__contains=q) | Q(description__contains=q))
             elif searchType == 'closest':
+                productList = []
                 for q in searchTerms:
-                    nextQuery = productList.filter(Q(name__contains=q) | Q(description__contains=q))
+                    nextQuery = ProductListing.objects.filter(active=True).filter(Q(name__contains=q) | Q(description__contains=q))
                     if nextQuery:
-                        productList = nextQuery
+                        productList = list(set(chain(nextQuery, productList)))
                     else:
                         pass
+                # for q in searchTerms:
+                #     nextQuery = productList.filter(Q(name__contains=q) | Q(description__contains=q))
+                #     if nextQuery:
+                #         productList = nextQuery
+                #     else:
+                #       pass
             else:
                 productList = ProductListing.objects.filter(active=True)
             paginator = Paginator(productList, 20)
