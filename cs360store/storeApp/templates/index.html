@@ -1,7 +1,8 @@
 {% extends "base_generic.html" %} {% block title %}<title>Home</title>{% endblock %}
 {% load humanize %}
 {% block content %}
-<h1 class="display-3">Superlative Sales</h1>
+{% load static %}
+<h1 class="display-3" style="line-height: 2.5;"><img style="width: 96px; transform: translate(0px, -5px);" src="{% static 'android-chrome-512x512.png' %}"/> | Superlative Sales</h1>
 <hr class="w-50"/>
 <h5 class="text-muted">
   Welcome to Superlative Sales, a website developed by Seth Lunders &amp; Donald
@@ -47,4 +48,4 @@
     </div>
   </div>
 </div>
-{% endblock %}
+{% endblock content %}
