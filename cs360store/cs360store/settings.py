@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # My additions
     'storeApp.apps.StoreappConfig',
     'django.contrib.humanize',
+    # 'django_extensions', # For generating ERD diagram
 ]
 
 MIDDLEWARE = [
