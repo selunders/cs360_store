@@ -80,7 +80,7 @@ class VendorAdmin(admin.ModelAdmin):
     fieldsets = [
         (None, 
         {
-            'fields':('name', 'owner', 'date_created')
+            'fields':('name', 'owner', 'date_created', 'description')
         }),
         ('Contact Info', {
             'fields': ('phone_number', 'emergency_phone_number'),
