@@ -4,8 +4,11 @@
 
 {% block content %}
     <h1 class="display-5">Products</h1>
-    <form action="">
-        <input class="form-control mb-3 product-search-form" type="text" placeholder="Search" aria-label="Search">
+    <form action="" method="post">
+      {% csrf_token %}
+      {{ form.as_table }}
+        <button type="submit" formaction="{% url 'product-search' type='exact' %}">Exact Search</button>
+        <button type="submit" formaction="{% url 'product-search' type='closest' %}">Closest Search</button>
     </form>
     {% if productlisting_list %}
     <div class="row">

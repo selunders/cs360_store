@@ -75,3 +75,9 @@ class CartProductUpdateForm(forms.Form):
         if data < 0 or data > 9999:
             raise forms.ValidationError(_('Invalid QTY. Valid range: 0-9999'))
         return data
+
+class ProductSearchForm(forms.Form):
+    query = forms.CharField()
+    def clean_query(self):
+        data = self.cleaned_data['query']
+        return data

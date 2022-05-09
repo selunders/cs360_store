@@ -5,12 +5,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormMixin
 from django.urls import reverse, reverse_lazy
-from django.db.models import F
+from django.db.models import F, Q
 # Create your views here.
 # from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage
+from itertools import chain
 
-from storeApp.forms import CartProductUpdateForm, ProductListingCreateForm, ServiceListingCreateForm, CartProductForm
+
+from storeApp.forms import CartProductUpdateForm, ProductListingCreateForm, ServiceListingCreateForm, CartProductForm, ProductSearchForm
 from .models import ShippingAddress, BillingAddress, ProductTag, ServiceTag, Vendor, Invoice, ProductListing, ServiceListing, InvoiceProduct, InvoiceService, CartProduct, CartService, Cart
 # ------------------
 # Public Pages
@@ -44,10 +46,10 @@ class VendorDetailView(generic.DetailView):
 class ProductListView(generic.ListView):
     model = ProductListing
     ordering = ['name']
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['top_tags'] = ProductTag.objects.all()[:5]
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = ProductSearchForm()
+        return context
 
 class ProductDetailView(generic.DetailView, FormMixin):
     model = ProductListing
@@ -374,3 +376,88 @@ def ServiceTagDetailView(request, pk, page=1):
         return render(request, 'storeApp/servicetag_detail.html', context)
     else:
         raise Http404("This tag was not found.")
+
+def ProductSearchRankedExactView(request, page=1):
+    """View tag's related services."""
+    searchTerms = []
+    for q in request.GET.values():
+        searchTerms.append(q)
+    productList = ProductListing.objects.filter(active=True)
+    for q in searchTerms:
+        productList = productList.filter(Q(name__contains=q) | Q(description__contains=q))
+    paginator = Paginator(productList, 20)
+    try:
+        productList = paginator.page(page)
+    except EmptyPage:
+        productList = paginator.page(paginator.num_pages)
+    context = {
+        'productlisting_list': productList,
+    }
+    print(searchTerms)
+    return render(request, 'storeApp/search/product-search.html', context)
+
+def ProductSearchClosestRankedView(request, page=1):
+    """View tag's related services."""
+    searchTerms = []
+    for q in request.GET.values():
+        searchTerms.append(q)
+    productList = ProductListing.objects.filter(active=True)#.filter(Q(name__contains=searchTerms[0]) | Q(description__contains=searchTerms[0])))
+    # This for loop shouldn't return empty sets, if any of the queries return a result
+    for q in searchTerms:
+        nextQuery = productList.filter(Q(name__contains=q) | Q(description__contains=q))
+        if nextQuery:
+            productList = nextQuery
+        else:
+            pass
+    paginator = Paginator(productList, 20)
+    try:
+        productList = paginator.page(page)
+    except EmptyPage:
+        productList = paginator.page(paginator.num_pages)
+    context = {
+        'productlisting_list': productList,
+    }
+    print(searchTerms)
+    return render(request, 'storeApp/search/product-search.html', context)
+
+def ProductSearchView(request, type, page=1):
+    """View tag's related services."""
+    searchType = type
+    searchTerms = []
+    productList = ProductListing.objects.filter(active=True)
+    # print(request.POST.query)
+    if request.method=='POST':
+        form=ProductSearchForm(request.POST)
+        if form.is_valid():
+            for q in form.cleaned_data['query'].split():
+                searchTerms.append(q)
+            if searchType == 'exact':
+                for q in searchTerms:
+                    productList = productList.filter(Q(name__contains=q) | Q(description__contains=q))
+            elif searchType == 'closest':
+                for q in searchTerms:
+                    nextQuery = productList.filter(Q(name__contains=q) | Q(description__contains=q))
+                    if nextQuery:
+                        productList = nextQuery
+                    else:
+                        pass
+            else:
+                productList = ProductListing.objects.filter(active=True)
+            paginator = Paginator(productList, 20)
+            try:
+                productList = paginator.page(page)
+            except EmptyPage:
+                productList = paginator.page(paginator.num_pages)
+            form=ProductSearchForm()
+            context = {
+                'form': form,
+                'productlisting_list': productList,
+            }
+            print(searchTerms)
+            return render(request, 'storeApp/search/product-search.html', context)
+    else:
+        form = ProductSearchForm()
+        context = {
+            'form': form,
+        }
+        return render(request, 'storeApp/search/product-search.html', context)
