@@ -1,5 +1,5 @@
 {% extends "base_generic.html" %}
-{% block title %}<title>SS | Services</title{% endblock %}
+{% block title %}<title>Services</title{% endblock %}
 {% load humanize %}
 
 {% block content %}
@@ -9,7 +9,7 @@
             {% for service in servicelisting_list %}
             {% if service.active %}
             <div class="col-xs-1 col-sm-8 col-md-6 col-lg-3 mb-2">
-                <div class="card flex-grow-1">
+                <div class="card flex-grow-1 border-light">
                     <img src="{{ service.imageURL }}" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">{{ service.name }}</h5>

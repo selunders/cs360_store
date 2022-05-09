@@ -81,3 +81,7 @@ class ProductSearchForm(forms.Form):
     def clean_query(self):
         data = self.cleaned_data['query']
         return data
+
+    def __init__(self, *args, **kwargs):
+        super(ProductSearchForm, self).__init__(*args, **kwargs)
+        self.fields['query'].label = "Search"

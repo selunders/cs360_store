@@ -1,5 +1,5 @@
 {% extends "base_generic.html" %}
-{% block title %}<title>SS | Products</title{% endblock %}
+{% block title %}<title>Products</title{% endblock %}
   {% load humanize %}
 
 {% block content %}
@@ -15,7 +15,7 @@
         {% for product in productlisting_list %}
             {% if product.active %}
                 <div class="col-xs-1 col-sm-6 col-md-4 col-lg-2 mb-2">
-                  <div class="card flex-grow-1">
+                  <div class="card flex-grow-1 border-light">
                     <img src="{{ product.imageURL }}" class="card-img-top" alt="...">
                     <div class="card-body">
                       <h5 class="card-title">{{ product.name }}</h5>
