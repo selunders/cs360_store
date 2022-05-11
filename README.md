@@ -24,3 +24,5 @@ Customer Login: 'SampleCustomer' Password: 'scustomer123'
 Vendor Login: 'SampleVendor' Password: 'svendor123'
 
 Note: we didn't make a way to create accounts, so these are the only ones available.
+
+If you have any more questions, we may have answered them in our project report.
